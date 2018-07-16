@@ -1,1 +1,1 @@
-# PepperOS ![PepperOS Logo](http://url/to/img.png)
+![PepperOS Logo](https://github.com/hamidrm/PepperOS/blob/master/pepper_os.jpg?raw=true)
