@@ -23,9 +23,9 @@
 
 if ($debugfile -eq "")
 {
-& "E:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "E:\PepperOS\kernel\settings\PepperOS.Debug.general.xcl" --backend -f "E:\PepperOS\kernel\settings\PepperOS.Debug.driver.xcl" 
+& "E:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "F:\PepperOS\kernel\settings\PepperOS.Debug.general.xcl" --backend -f "F:\PepperOS\kernel\settings\PepperOS.Debug.driver.xcl" 
 }
 else
 {
-& "E:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "E:\PepperOS\kernel\settings\PepperOS.Debug.general.xcl" --debug_file=$debugfile --backend -f "E:\PepperOS\kernel\settings\PepperOS.Debug.driver.xcl" 
+& "E:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "F:\PepperOS\kernel\settings\PepperOS.Debug.general.xcl" --debug_file=$debugfile --backend -f "F:\PepperOS\kernel\settings\PepperOS.Debug.driver.xcl" 
 }
