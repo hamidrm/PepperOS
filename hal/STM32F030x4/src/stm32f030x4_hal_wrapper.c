@@ -2,10 +2,6 @@
 #include "../inc/stm32f030x4_init.h"
 #include "pepper_os.h"
 
-
-static PosStatusType   _to_PosStatusType(HAL_StatusTypeDef status);
-
-
 void USART1_IRQHandler(void)
 {
   uart_sent();

@@ -1,6 +1,7 @@
 #ifndef _PEPPER_OS_H_
 #define _PEPPER_OS_H_
 
+#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 #include "pos_utility.h"

@@ -39,7 +39,6 @@ typedef uint32_t pos_process_message_content;
 typedef uint32_t time_value;
 typedef uint32_t timer_id_t;
 typedef uint32_t handle;
-typedef uint32_t size_t;
 typedef uint32_t pos_t;
 typedef uint32_t pos_mutex_id_t;
 typedef void(*task_start_handler_t)(_PID);
