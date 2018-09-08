@@ -1,10 +1,39 @@
-/*
-* @brief POS Memory Management
-* @file pos_memory.c
-* @author Hamid Reza Mehrabian
-* @code
-*/
+/*******************************************************************************
+MIT License
 
+Copyright (c) 2018 Hamid Reza Mehrabian
+
+This file is part of PepperOS. 
+
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+********************************************************************************/
+
+
+/**
+ *  @file    pos_memory.c
+ *  @author  Hamid Reza Mehrabian
+ *  @version 1.0
+ *  
+ *  @brief pepper os heap management
+ *
+ */
 
 // Header Files
 #include <stdint.h>
@@ -178,8 +207,8 @@ PosStatusType pmemcpy(void * dst,pos_t dst_offset,void * src,pos_t src_offset,si
 	size_t dst_size,src_size;
 	size_t i=0;
 
-        POS_ASSERT( dst == NULL_PTR );
-        POS_ASSERT( src == NULL_PTR );
+        POS_ASSERT( dst != NULL_PTR );
+        POS_ASSERT( src != NULL_PTR );
         
         if(pos_is_heap(dst) && pos_is_heap(src)){
           dst_size = pget_var_size(dst);
@@ -218,7 +247,7 @@ PosStatusType pmemset(void * dst,pos_t dst_offset,size_t len,uint8_t value){
 	size_t dst_size;
 	size_t i=0;
       
-        POS_ASSERT( dst == NULL_PTR );
+        POS_ASSERT( dst != NULL_PTR );
                    
         
         if(pos_is_heap(dst)){

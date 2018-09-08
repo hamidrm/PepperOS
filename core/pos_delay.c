@@ -1,9 +1,39 @@
-/*
-* @brief POS delay
-* @file pos_delay.c
-* @author Hamid Reza Mehrabian
-* @code
-*/
+/*******************************************************************************
+MIT License
+
+Copyright (c) 2018 Hamid Reza Mehrabian
+
+This file is part of PepperOS. 
+
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+********************************************************************************/
+
+
+/**
+ *  @file    pos_delay.c
+ *  @author  Hamid Reza Mehrabian
+ *  @version 1.0
+ *  
+ *  @brief pepper os delay management
+ *
+ */
 
 
 // Header Files
@@ -32,8 +62,8 @@ PosStatusType pos_delay_add(_PID pid,uint32_t time_ms,PosTaskStatus status){
   _pos_delay_t * prev_element = NULL;
   _pos_delay_t * new_delay = (_pos_delay_t *)pmalloc(sizeof(_pos_delay_t));
   
-  POS_ASSERT(new_delay == NULL_PTR);
-  POS_ASSERT(pos_get_task_by_pid(pid) == NULL_PTR);
+  POS_ASSERT(new_delay != NULL_PTR);
+  POS_ASSERT(pos_get_task_by_pid(pid) != NULL_PTR);
   
   new_delay->elapsed_time = time_ms;
   new_delay->pid = pid;
@@ -56,7 +86,7 @@ PosStatusType pos_delay_remove(_PID pid){
   _pos_delay_t * curr_element = pos_delay_head;
   _pos_delay_t * prev_element = NULL;
 
-  POS_ASSERT(pos_get_task_by_pid(pid) == NULL_PTR);
+  POS_ASSERT(pos_get_task_by_pid(pid) != NULL_PTR);
   
   while(curr_element!= NULL){
     if(curr_element->pid == pid){

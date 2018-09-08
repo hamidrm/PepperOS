@@ -1,9 +1,39 @@
-/*
-* @brief POS Semaphore Management
-* @file pos_semaphore.c
-* @author Hamid Reza Mehrabian
-* @code
-*/
+/*******************************************************************************
+MIT License
+
+Copyright (c) 2018 Hamid Reza Mehrabian
+
+This file is part of PepperOS. 
+
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+********************************************************************************/
+
+
+/**
+ *  @file    pos_semaphore.c
+ *  @author  Hamid Reza Mehrabian
+ *  @version 1.0
+ *  
+ *  @brief pepper os semaphore management
+ *
+ */
 
 
 // Header Files
@@ -28,14 +58,14 @@ PosStatusType pos_semaphore_init(pos_semaphore_t *s,int16_t iv){
 
 PosStatusType pos_semaphore_wait(pos_semaphore_t *s){
         _PID pid = _pos_get_current_pid();
-        POS_ASSERT(s == NULL_PTR);
+        POS_ASSERT(s != NULL_PTR);
 	POS_BEGIN_KCRITICAL;
         s->cnt-=1;	
 	if(s->cnt>=0){
             POS_END_KCRITICAL;
             return POS_OK;
 	}
-	POS_ASSERT(pos_semaphore_enq(s,_pos_get_current_pid()) != POS_OK);
+	POS_ASSERT(pos_semaphore_enq(s,_pos_get_current_pid()) == POS_OK);
         pos_get_current_task()->status = POS_TASK_STATUS_SEM_WAITING;
 	
         pos_force_cs();
@@ -46,7 +76,7 @@ PosStatusType pos_semaphore_wait(pos_semaphore_t *s){
 
 PosStatusType pos_semaphore_wait_until(pos_semaphore_t *s,uint32_t time_ms){
         _PID pid = _pos_get_current_pid();
-        POS_ASSERT_SEND_ERROR(s == NULL_PTR,POS_MEM_UNALLOCATED);
+        POS_ASSERT_SEND_ERROR(s != NULL_PTR,POS_MEM_UNALLOCATED);
         
 	POS_BEGIN_KCRITICAL;
         s->cnt-=1;	
@@ -54,7 +84,7 @@ PosStatusType pos_semaphore_wait_until(pos_semaphore_t *s,uint32_t time_ms){
             POS_END_KCRITICAL;
             return POS_OK;
 	}
-	POS_ASSERT(pos_semaphore_enq(s,_pos_get_current_pid()) != POS_OK);
+	POS_ASSERT(pos_semaphore_enq(s,_pos_get_current_pid()) == POS_OK);
 
 	pos_delay_add(pos_get_current_task()->pid,time_ms,POS_TASK_STATUS_SEM_WAITING_UNTIL);
         /* 
@@ -68,7 +98,7 @@ PosStatusType pos_semaphore_wait_until(pos_semaphore_t *s,uint32_t time_ms){
         if(pos_get_current_task()->status == POS_TASK_STATUS_DELAY_TIMEOUT){
           /* Increase semaphore */
           s->cnt+=1;
-          POS_ASSERT(pos_semaphore_deq(s,NULL_PTR) != POS_OK);
+          POS_ASSERT(pos_semaphore_deq(s,NULL_PTR) == POS_OK);
           pos_get_current_task()->status = POS_TASK_STATUS_ACTIVE;
           return POS_TIMEOUT;
         }else{
@@ -79,11 +109,11 @@ PosStatusType pos_semaphore_wait_until(pos_semaphore_t *s,uint32_t time_ms){
 
 PosStatusType pos_semaphore_signal(pos_semaphore_t *s,_PID * pid){
         _PID _pid;
-        POS_ASSERT_SEND_ERROR(s == NULL_PTR,POS_MEM_UNALLOCATED);
+        POS_ASSERT_SEND_ERROR(s != NULL_PTR,POS_MEM_UNALLOCATED);
         
         POS_BEGIN_KCRITICAL;
 	s->cnt+=1;
-	POS_ASSERT(pos_semaphore_deq(s,&_pid) != POS_OK);
+	POS_ASSERT(pos_semaphore_deq(s,&_pid) == POS_OK);
         if(_pid != POS_KERNEL_PID &&  pos_get_task_by_pid(_pid)->priority == POS_TASK_HIGH_PRIORITY)
           pos_force_cs_by_pid(_pid);
         POS_END_KCRITICAL;
@@ -96,11 +126,11 @@ PosStatusType pos_semaphore_signal(pos_semaphore_t *s,_PID * pid){
 static PosStatusType pos_semaphore_enq(pos_semaphore_t *s,_PID pid){
 	pos_semaphore_queue_t * q = s->q;
 	pos_semaphore_queue_t *temp_element;
-        POS_ASSERT_SEND_ERROR(s == NULL_PTR,POS_MEM_UNALLOCATED);
-        POS_ASSERT(pos_get_task_by_pid(pid) == NULL_PTR);
+        POS_ASSERT_SEND_ERROR(s != NULL_PTR,POS_MEM_UNALLOCATED);
+        POS_ASSERT(pos_get_task_by_pid(pid) != NULL_PTR);
 	if(q==NULL){
 		s->q = (pos_semaphore_queue_t *)pmalloc(sizeof(pos_semaphore_queue_t));
-                POS_ASSERT(s->q == NULL_PTR);
+                POS_ASSERT(s->q != NULL_PTR);
 		s->q->pid = pid;
 		s->q->next = NULL;
 		return POS_OK;
@@ -110,7 +140,7 @@ static PosStatusType pos_semaphore_enq(pos_semaphore_t *s,_PID pid){
 		q=(pos_semaphore_queue_t *)(temp_element->next);
 	}
 	temp_element->next = (pos_semaphore_queue_t *)pmalloc(sizeof(pos_semaphore_queue_t));
-        POS_ASSERT(temp_element->next == NULL_PTR);
+        POS_ASSERT(temp_element->next != NULL_PTR);
 	temp_element = (pos_semaphore_queue_t *)(temp_element->next);
 	temp_element->next = NULL;
 	temp_element->pid = pid;
@@ -123,7 +153,7 @@ static PosStatusType pos_semaphore_deq(pos_semaphore_t *s,_PID * pid){
 	pos_semaphore_queue_t * q = s->q;
 	pos_semaphore_queue_t *temp_element;
         
-        POS_ASSERT_SEND_ERROR(s == NULL_PTR,POS_MEM_UNALLOCATED);
+        POS_ASSERT_SEND_ERROR(s != NULL_PTR,POS_MEM_UNALLOCATED);
         if(q == NULL_PTR){
           *pid = NULL_PTR;
           return POS_OK;

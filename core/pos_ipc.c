@@ -1,10 +1,39 @@
-/*
-* @brief POS Memory Management
-* @file pos_ipc.c
-* @author Hamid Reza Mehrabian
-* @code
-*/
+/*******************************************************************************
+MIT License
 
+Copyright (c) 2018 Hamid Reza Mehrabian
+
+This file is part of PepperOS. 
+
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+********************************************************************************/
+
+
+/**
+ *  @file    pos_ipc.c
+ *  @author  Hamid Reza Mehrabian
+ *  @version 1.0
+ *  
+ *  @brief pepper os pepper os inter-process communication
+ *
+ */
 
 // Header Files
 #include <stdint.h>
@@ -39,7 +68,7 @@ PosStatusType pos_send_message(_PID target,	pos_process_message_type message_typ
         uint32_t messages_cnt=0;
         pos_process_message_queue_t *q = __mq[target-1];
 #endif
-        POS_ASSERT(pos_get_task_by_pid(target) == NULL_PTR);
+        POS_ASSERT(pos_get_task_by_pid(target) != NULL_PTR);
 	e.src = _pos_get_current_pid();
 	e.message_type = message_type;
 	e.message_content = message_content;
@@ -61,9 +90,9 @@ PosStatusType pos_send_message(_PID target,	pos_process_message_type message_typ
 PosStatusType pos_get_message(void){
         pos_process_message_t pmsg;
         _PID pid = _pos_get_current_pid();
-        POS_ASSERT(pos_get_current_task()->proc_fun == NULL_PTR);
-        POS_ASSERT(pos_semaphore_wait(&__mqs[pid-1]) != POS_OK);
-	POS_ASSERT_SEND_ERROR(pos_ipc_deq(pid,&pmsg) != POS_QUEUE_NOT_EMPTY,POS_OS_QUEUE_EMPTY);
+        POS_ASSERT(pos_get_current_task()->proc_fun != NULL_PTR);
+        POS_ASSERT(pos_semaphore_wait(&__mqs[pid-1]) == POS_OK);
+	POS_ASSERT_SEND_ERROR(pos_ipc_deq(pid,&pmsg) == POS_QUEUE_NOT_EMPTY,POS_OS_QUEUE_EMPTY);
         pos_get_current_task()->proc_fun(pmsg.message_type,pmsg.message_content,pmsg.src);
         return POS_OK;
 }
@@ -74,7 +103,7 @@ PosStatusType pos_ipc_enq(_PID pid,pos_process_message_t * m){
 	POS_BEGIN_KCRITICAL;	
 	if(q==NULL){
 		__mq[pid-1] = ( pos_process_message_queue_t *)pmalloc(sizeof(pos_process_message_queue_t));
-                POS_ASSERT(__mq[pid-1] == NULL_PTR);
+                POS_ASSERT(__mq[pid-1] != NULL_PTR);
 		__mq[pid-1]->element.src = m->src;
 		__mq[pid-1]->element.message_type = m->message_type;
                 __mq[pid-1]->element.message_content = m->message_content;
@@ -87,7 +116,7 @@ PosStatusType pos_ipc_enq(_PID pid,pos_process_message_t * m){
 		q=(pos_process_message_queue_t *)(temp_element->next);
 	}
 	temp_element->next = (pos_process_message_queue_t *)pmalloc(sizeof(pos_process_message_queue_t));
-        POS_ASSERT(temp_element->next == NULL_PTR);
+        POS_ASSERT(temp_element->next != NULL_PTR);
 	temp_element = (pos_process_message_queue_t *)(temp_element->next);
 	temp_element->element.src = m->src;
 	temp_element->element.message_type = m->message_type;

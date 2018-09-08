@@ -1,10 +1,44 @@
-/*
-* @brief POS Memory Management
-* @file pos_scheduler.c
-* @author Hamid Reza Mehrabian
-* @code
-*/
+/*******************************************************************************
+MIT License
 
+Copyright (c) 2018 Hamid Reza Mehrabian
+
+This file is part of PepperOS. 
+
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+********************************************************************************/
+
+
+/**
+ *  @file    pos_scheduler.c
+ *  @author  Hamid Reza Mehrabian
+ *  @version 1.0
+ *  
+ *  @brief pepper os scheduler. with RR method. There are three priority level for each task in PepperOS :
+ *      1. Low priority : has been assigned 75% of MEAN_QUANTUM_LENGTH as quantum time to this priority
+ *      2. Normal priority : has been assigned 100% of MEAN_QUANTUM_LENGTH as quantum time to this priority
+ *      3. High priority : has been assigned 125% of MEAN_QUANTUM_LENGTH as quantum time to this priority. In Addition , vice versa of others , 
+ *        when this tasks type are on blocking mode , on signaling semaphores or releasing mutexes or elapsing delay events from other tasks , 
+ *        scheduler will immediatly switch to this task. 
+ *
+ */
 
 // Header Files
 #include <stdint.h>
@@ -76,7 +110,7 @@ void pos_scheduler_init(void){
 PosStatusType pos_schedule_init_task(task_start_handler_t start_handler,task_msg_proc_t proc_handler,uint8_t * stack,size_t stack_size,PosTaskPriority priority,_PID * pid){
   pos_scheduler_t * current_element = tasks_scheduler_head;
   pos_scheduler_t * new_element = (pos_scheduler_t *)pmalloc(sizeof(pos_scheduler_t));
-  POS_ASSERT(new_element == NULL_PTR);
+  POS_ASSERT(new_element != NULL_PTR);
   *pid=POS_PID_BASE;
   POS_BEGIN_KCRITICAL;
   /* Find new task PID */

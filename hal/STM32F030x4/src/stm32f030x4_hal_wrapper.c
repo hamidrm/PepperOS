@@ -1,7 +1,46 @@
+/*******************************************************************************
+MIT License
+
+Copyright (c) 2018 Hamid Reza Mehrabian
+
+This file is part of PepperOS. 
+
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+********************************************************************************/
+
+
+/**
+ *  @file    stm32f030x4_hal_wrapper.c
+ *  @author  Hamid Reza Mehrabian
+ *  @version 1.0
+ *  
+ *  @brief PepperOS will uses from this file to using HAL. All supported devices , will wraps (or  re-implements) all MCU peripherals functions here.
+ *
+ */
+
 #include "../inc/stm32f030x4_hal_wrapper.h"
 #include "../inc/stm32f030x4_init.h"
 #include "pepper_os.h"
 
+
+#if USE_CONSOLE == TRUE
 void USART1_IRQHandler(void)
 {
   uart_sent();
@@ -11,7 +50,6 @@ void USART1_IRQHandler(void)
 __weak void uart_sent(void){
   
 }
-
 
 void uart_get_int_type(pos_hw_uart_t * pos_uart,PosUartIntFlags * ints){
   USART_TypeDef * Ins = (USART_TypeDef *)(pos_uart->handler);
@@ -43,6 +81,9 @@ void uart_read(pos_hw_uart_t * uart_params,uint8_t * data){
   while (!(((USART_TypeDef *)(uart_params->handler))->ISR & USART_ISR_RXNE));
   *data = ((USART_TypeDef *)(uart_params->handler))->RDR;
 }
+#endif
+
+
 
 uint8_t timer_a_get_elapsed_status(void){
   return (TIM3->SR & TIM_SR_UIF)==0?0:1;

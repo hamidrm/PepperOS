@@ -343,6 +343,7 @@
                     <state>$PROJ_DIR$\..\..\..\..\core\include</state>
                     <state>$PROJ_DIR$\..\..\..\..\lib\console\</state>
                     <state>$PROJ_DIR$\..\..\..\..\lib\include</state>
+                    <state>$PROJ_DIR$\..\src</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -757,7 +758,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\..\..\..\..\hal\STM32F030x4\stm32f030x4.icf</state>
+                    <state>$PROJ_DIR$\..\..\..\..\hal\STM32F030x4\iar\stm32f030x4.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -2057,9 +2058,6 @@
                 <name>$PROJ_DIR$\..\..\..\..\core\include\pepper_os.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\..\core\include\pos_config.h</name>
-            </file>
-            <file>
                 <name>$PROJ_DIR$\..\..\..\..\core\include\pos_console.h</name>
             </file>
             <file>
@@ -2183,6 +2181,9 @@
     </group>
     <group>
         <name>user applications</name>
+        <file>
+            <name>$PROJ_DIR$\..\src\pos_config.h</name>
+        </file>
         <file>
             <name>$PROJ_DIR$\..\src\task1.c</name>
         </file>

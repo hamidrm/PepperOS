@@ -1421,14 +1421,14 @@
         <toolchain>
             <name>ARM</name>
         </toolchain>
-        <debug>0</debug>
+        <debug>1</debug>
         <settings>
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
                 <version>29</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>CInput</name>
                     <state>1</state>
@@ -1459,7 +1459,7 @@
                 </option>
                 <option>
                     <name>MemFile</name>
-                    <state></state>
+                    <state>$TOOLKIT_DIR$\CONFIG\debugger\ST\STM32F030F4.ddf</state>
                 </option>
                 <option>
                     <name>RunToEnable</name>
@@ -1499,15 +1499,15 @@
                 </option>
                 <option>
                     <name>OCDynDriverList</name>
-                    <state>ARMSIM_ID</state>
+                    <state>STLINK_ID</state>
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state></state>
+                    <state>8.20.1.14181</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CLowLevel</name>
@@ -1527,7 +1527,7 @@
                 </option>
                 <option>
                     <name>FlashLoadersV3</name>
-                    <state></state>
+                    <state>$TOOLKIT_DIR$\config\flashloader\ST\FlashSTM32F03xx4.board</state>
                 </option>
                 <option>
                     <name>OCImagesSuppressCheck1</name>
@@ -1595,7 +1595,7 @@
                 </option>
                 <option>
                     <name>OCMulticoreNrOfCores</name>
-                    <state></state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OCMulticoreMaster</name>
@@ -1637,7 +1637,7 @@
             <data>
                 <version>1</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>OCSimDriverInfo</name>
                     <state>1</state>
@@ -1662,7 +1662,7 @@
             <data>
                 <version>0</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>CCadiMemory</name>
                     <state>1</state>
@@ -1691,7 +1691,7 @@
             <data>
                 <version>4</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>CatchSFERR</name>
                     <state>1</state>
@@ -1870,7 +1870,7 @@
             <data>
                 <version>0</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>OCDriverInfo</name>
                     <state>1</state>
@@ -1907,7 +1907,7 @@
             <data>
                 <version>8</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>CatchSFERR</name>
                     <state>1</state>
@@ -2137,7 +2137,7 @@
             <data>
                 <version>16</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>CCCatchSFERR</name>
                     <state>0</state>
@@ -2241,12 +2241,12 @@
                 </option>
                 <option>
                     <name>CCJLinkInterfaceRadio</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCJLinkResetList</name>
                     <version>6</version>
-                    <state>5</state>
+                    <state>7</state>
                 </option>
                 <option>
                     <name>CCJLinkInterfaceCmdLine</name>
@@ -2311,7 +2311,7 @@
                 </option>
                 <option>
                     <name>CCSwoClockAuto</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSwoClockEdit</name>
@@ -2337,7 +2337,7 @@
             <data>
                 <version>2</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>OCDriverInfo</name>
                     <state>1</state>
@@ -2370,7 +2370,7 @@
             <data>
                 <version>3</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>OCDriverInfo</name>
                     <state>1</state>
@@ -2395,10 +2395,10 @@
             <data>
                 <version>4</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>CCSTLinkCatchSFERR</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSTLinkDAPNumber</name>
@@ -2410,7 +2410,7 @@
                 </option>
                 <option>
                     <name>CCSTLinkInterfaceRadio</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSTLinkInterfaceCmdLine</name>
@@ -2423,11 +2423,11 @@
                 </option>
                 <option>
                     <name>CCCpuClockEdit</name>
-                    <state>72.0</state>
+                    <state>48.0</state>
                 </option>
                 <option>
                     <name>CCSwoClockAuto</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSwoClockEdit</name>
@@ -2451,35 +2451,35 @@
                 </option>
                 <option>
                     <name>CCSTLinkCatchCORERESET</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSTLinkCatchMMERR</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSTLinkCatchNOCPERR</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSTLinkCatchCHRERR</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSTLinkCatchSTATERR</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSTLinkCatchBUSERR</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSTLinkCatchINTERR</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSTLinkCatchHARDERR</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCSTLinkCatchDummy</name>
@@ -2510,7 +2510,7 @@
             <data>
                 <version>0</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>CThirdPartyDriverDll</name>
                     <state>###Uninitialized###</state>
@@ -2535,7 +2535,7 @@
             <data>
                 <version>1</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>OCDriverInfo</name>
                     <state>1</state>
@@ -2606,7 +2606,7 @@
             <data>
                 <version>6</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>0</debug>
+                <debug>1</debug>
                 <option>
                     <name>CCXds100CatchSFERR</name>
                     <state>0</state>
