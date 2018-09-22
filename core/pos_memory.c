@@ -47,8 +47,7 @@ SOFTWARE.
 #pragma section="CSTACK"
 
 // Heap Region
-static volatile uint32_t * __heap_region = __sfe("CSTACK");
-
+static uint32_t * __heap_region = __sfe("CSTACK");
 
 static uint32_t total_heap_used;
 
@@ -78,7 +77,7 @@ PosStatusType init_pos_memory(void){
  * @param[in]  size       Heap size
  */
 void * pmalloc(size_t size){
-	pos_t	 bit_offset=0,offset=POS_MEMORY_ALLOCATOR_START,block_number=0,block_num_found,block_offset_found,start_filling_offset=0,start_filling_block=0;
+	uint32_t	 bit_offset=0,offset=POS_MEMORY_ALLOCATOR_START,block_number=0,block_num_found,block_offset_found,start_filling_offset=0,start_filling_block=0;
 	block_type c_data;
 	size_t free_space=0,filled_bits=0;
         
@@ -87,7 +86,7 @@ void * pmalloc(size_t size){
 	size+=POS_MEMORY_BLOCK_SIZE_LEN;
         
 
-	while(offset<POS_MEMORY_REGION_START){
+	while(offset<(POS_MEMORY_ALLOCATOR_SIZE+POS_MEMORY_ALLOCATOR_START)){
 		c_data = *(block_type *)(offset);
 		for(bit_offset=0;bit_offset<POS_MEMORY_BLOCK_SIZE;bit_offset++){
 			if(((c_data>>bit_offset) & 1UL)==0){
@@ -99,7 +98,7 @@ void * pmalloc(size_t size){
 			}else
 				free_space=0;
 			if(free_space==POS_MEMORY_BLOCK(size)){
-				//Requerred Space Found
+				//Requerred space found
 				start_filling_offset = block_offset_found;
 				start_filling_block = block_num_found;
 				filled_bits=0;
@@ -141,14 +140,14 @@ void pfree(void * _a){
     pos_error(POS_MEM_INV_ADDR);
     return;
   }
-  pos_t bit_offset,c_alloc = (pos_t)_a - POS_MEMORY_REGION_START - POS_MEMORY_BLOCK_SIZE_LEN;
+  uint32_t bit_offset,c_alloc = (uint32_t)_a - POS_MEMORY_REGION_START - POS_MEMORY_BLOCK_SIZE_LEN;
   size_t c_size = (*((uint8_t *)(_a)-1))<<24 | 
                     (*((uint8_t *)(_a)-2))<<16 | 
                     (*((uint8_t *)(_a)-3))<<8 |
                     (*((uint8_t *)(_a)-4))+POS_MEMORY_BLOCK_SIZE_LEN;
   total_heap_used -= c_size;
-  pos_t block_num = (c_alloc/POS_MEMORY_BLOCK_CNT)/POS_MEMORY_BLOCK_SIZE;
-  pos_t block_offset = (c_alloc/POS_MEMORY_BLOCK_CNT)%POS_MEMORY_BLOCK_SIZE;
+  uint32_t block_num = (c_alloc/POS_MEMORY_BLOCK_CNT)/POS_MEMORY_BLOCK_SIZE;
+  uint32_t block_offset = (c_alloc/POS_MEMORY_BLOCK_CNT)%POS_MEMORY_BLOCK_SIZE;
   size_t filled_bits=0;
   do{
           for(bit_offset=block_offset;filled_bits<POS_MEMORY_BLOCK(c_size) && bit_offset<POS_MEMORY_BLOCK_SIZE;bit_offset++,filled_bits++)
@@ -203,7 +202,7 @@ size_t pget_var_size(void * _a){
  * @param[in]   src_offset   Offset of destinition address.
  * @param[in]   len          Length of data to copy.
  */
-PosStatusType pmemcpy(void * dst,pos_t dst_offset,void * src,pos_t src_offset,size_t len){
+PosStatusType pmemcpy(void * dst,uint32_t dst_offset,void * src,uint32_t src_offset,size_t len){
 	size_t dst_size,src_size;
 	size_t i=0;
 
@@ -243,7 +242,7 @@ PosStatusType pmemcpy(void * dst,pos_t dst_offset,void * src,pos_t src_offset,si
  * @param[in]   len          Length of data.
  * @param[in]   value        Value to set.
  */
-PosStatusType pmemset(void * dst,pos_t dst_offset,size_t len,uint8_t value){
+PosStatusType pmemset(void * dst,uint32_t dst_offset,size_t len,uint8_t value){
 	size_t dst_size;
 	size_t i=0;
       

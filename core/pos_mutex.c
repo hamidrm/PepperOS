@@ -48,7 +48,7 @@ SOFTWARE.
 #if MAX_MUTEX_NUM > 0
 static volatile uint32_t __mutex_locks[( MAX_MUTEX_NUM - 1 ) / 32 + 1];
 static uint32_t __mutex_locks_map[( MAX_MUTEX_NUM - 1 ) / 32 + 1];
-static _PID     __mutex_locks_pid[MAX_MUTEX_NUM][MAX_PROCCESS_NUM-1];
+static pos_pid_type     __mutex_locks_pid[MAX_MUTEX_NUM][MAX_PROCCESS_NUM-1];
 static uint16_t __mutex_locked_pid_cnt[MAX_MUTEX_NUM];
 
 void pos_mutex_init(void){

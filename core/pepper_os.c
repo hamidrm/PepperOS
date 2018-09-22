@@ -36,8 +36,7 @@ SOFTWARE.
  */
 
 #include "pepper_os.h"
-#include _DEV_HAL_HEADER
-#include _DEV_INIT_HEADER
+
 
 static uint32_t last_error_no;
 
@@ -47,7 +46,9 @@ void pos_init(void)
   pos_arch_init();
   init_pos_memory();
   pos_init_timers();
-  led_init();
+#if defined(POS_GPIO)
+  init_ports();
+#endif
   pos_ipc_init();
 #if MAX_MUTEX_NUM > 0
   pos_mutex_init();
@@ -56,6 +57,9 @@ void pos_init(void)
   pos_delay_init();
 #if USE_CONSOLE == TRUE
   pos_console_init();
+#endif
+#if USE_EXTINT
+  pos_extint_init();
 #endif
 }
 
@@ -70,7 +74,7 @@ void pos_delay_ms(uint32_t time){
 
 PosStatusType pos_create_task(task_start_handler_t main_fn,task_msg_proc_t process_fn,uint8_t * stack_addr,size_t stack_size,PosTaskPriority priority){
   uint8_t * _stack_addr;
-  _PID pid;
+  pos_pid_type pid;
   if(stack_addr != 0)
     _stack_addr = stack_addr;
   else
@@ -85,6 +89,9 @@ PosStatusType pos_create_task(task_start_handler_t main_fn,task_msg_proc_t proce
 
 void pos_error(uint32_t error_no){
   last_error_no = error_no;
+#ifdef POS_DEBUG
+  asm volatile ("bkpt #0");
+#endif
 }
 
 uint32_t pos_get_last_error(void){

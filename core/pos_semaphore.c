@@ -46,8 +46,9 @@ SOFTWARE.
 #include "pos_semaphore.h"
 #include _ARCH_HEADER
 
-static PosStatusType pos_semaphore_enq(pos_semaphore_t *s,_PID pid);
-static PosStatusType pos_semaphore_deq(pos_semaphore_t *s,_PID * pid);
+static PosStatusType pos_semaphore_enq(pos_semaphore_t *s,pos_pid_type pid);
+static PosStatusType pos_semaphore_deq(pos_semaphore_t *s,pos_pid_type * pid);
+
 
 PosStatusType pos_semaphore_init(pos_semaphore_t *s,int16_t iv){
 	s->cnt = iv;
@@ -57,7 +58,8 @@ PosStatusType pos_semaphore_init(pos_semaphore_t *s,int16_t iv){
 }
 
 PosStatusType pos_semaphore_wait(pos_semaphore_t *s){
-        _PID pid = _pos_get_current_pid();
+        pos_pid_type pid = _pos_get_current_pid();
+        
         POS_ASSERT(s != NULL_PTR);
 	POS_BEGIN_KCRITICAL;
         s->cnt-=1;	
@@ -75,7 +77,7 @@ PosStatusType pos_semaphore_wait(pos_semaphore_t *s){
 }
 
 PosStatusType pos_semaphore_wait_until(pos_semaphore_t *s,uint32_t time_ms){
-        _PID pid = _pos_get_current_pid();
+        pos_pid_type pid = _pos_get_current_pid();
         POS_ASSERT_SEND_ERROR(s != NULL_PTR,POS_MEM_UNALLOCATED);
         
 	POS_BEGIN_KCRITICAL;
@@ -107,8 +109,8 @@ PosStatusType pos_semaphore_wait_until(pos_semaphore_t *s,uint32_t time_ms){
         }
 }
 
-PosStatusType pos_semaphore_signal(pos_semaphore_t *s,_PID * pid){
-        _PID _pid;
+PosStatusType pos_semaphore_signal(pos_semaphore_t *s,pos_pid_type * pid){
+        pos_pid_type _pid;
         POS_ASSERT_SEND_ERROR(s != NULL_PTR,POS_MEM_UNALLOCATED);
         
         POS_BEGIN_KCRITICAL;
@@ -116,6 +118,7 @@ PosStatusType pos_semaphore_signal(pos_semaphore_t *s,_PID * pid){
 	POS_ASSERT(pos_semaphore_deq(s,&_pid) == POS_OK);
         if(_pid != POS_KERNEL_PID &&  pos_get_task_by_pid(_pid)->priority == POS_TASK_HIGH_PRIORITY)
           pos_force_cs_by_pid(_pid);
+        
         POS_END_KCRITICAL;
         pos_yield_delay();
         if(pid != NULL_PTR)
@@ -123,7 +126,7 @@ PosStatusType pos_semaphore_signal(pos_semaphore_t *s,_PID * pid){
         return POS_OK;
 }
 
-static PosStatusType pos_semaphore_enq(pos_semaphore_t *s,_PID pid){
+static PosStatusType pos_semaphore_enq(pos_semaphore_t *s,pos_pid_type pid){
 	pos_semaphore_queue_t * q = s->q;
 	pos_semaphore_queue_t *temp_element;
         POS_ASSERT_SEND_ERROR(s != NULL_PTR,POS_MEM_UNALLOCATED);
@@ -148,8 +151,8 @@ static PosStatusType pos_semaphore_enq(pos_semaphore_t *s,_PID pid){
 }
 
 
-static PosStatusType pos_semaphore_deq(pos_semaphore_t *s,_PID * pid){
-	_PID res;
+static PosStatusType pos_semaphore_deq(pos_semaphore_t *s,pos_pid_type * pid){
+	pos_pid_type res;
 	pos_semaphore_queue_t * q = s->q;
 	pos_semaphore_queue_t *temp_element;
         

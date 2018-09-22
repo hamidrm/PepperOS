@@ -97,7 +97,7 @@ inline void pos_reset_task_timer(void){
 }
 
 
-void pos_init_stack(_PID pid,uint8_t * stack,size_t stack_size,task_start_handler_t start_handler){
+void pos_init_stack(pos_pid_type pid,uint8_t * stack,size_t stack_size,task_start_handler_t start_handler){
   uint32_t * stack_pointer = (uint32_t *)((uint32_t)stack+stack_size-64);
   /* Used frame stack on finishing task */
   stack_pointer[CM0_STACKING_OFFSET_R0] = pid;
@@ -129,9 +129,6 @@ inline void pos_yield_delay(void){
 }
 
 void pos_arch_init(void){
-    HAL_NVIC_SetPriority(PendSV_IRQn, 0xff,0); /* Lowest possible priority */
-    HAL_NVIC_SetPriority(SysTick_IRQn, 0x00,0); /* Highest possible priority */
-    HAL_NVIC_SetPriority(SVC_IRQn, 0x01,0); /* High priority */  
     __primask_value_cnt = 0;
 }
 

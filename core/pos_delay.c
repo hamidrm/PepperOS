@@ -57,7 +57,7 @@ PosStatusType pos_delay_init(void){
 }
 
 
-PosStatusType pos_delay_add(_PID pid,uint32_t time_ms,PosTaskStatus status){
+PosStatusType pos_delay_add(pos_pid_type pid,uint32_t time_ms,PosTaskStatus status){
   _pos_delay_t * curr_element = pos_delay_head;
   _pos_delay_t * prev_element = NULL;
   _pos_delay_t * new_delay = (_pos_delay_t *)pmalloc(sizeof(_pos_delay_t));
@@ -82,7 +82,7 @@ PosStatusType pos_delay_add(_PID pid,uint32_t time_ms,PosTaskStatus status){
 }
 
 
-PosStatusType pos_delay_remove(_PID pid){
+PosStatusType pos_delay_remove(pos_pid_type pid){
   _pos_delay_t * curr_element = pos_delay_head;
   _pos_delay_t * prev_element = NULL;
 

@@ -37,31 +37,35 @@ SOFTWARE.
  */
 
 #include "pepper_os.h"
+#include "task1.h"
 
+pos_pid_type _pid;
+void InitLed(void);
 
-_PID _pid;
-
-
-void Task1_Main(_PID pid){
+void Task1_Main(pos_pid_type pid){
   _pid = pid;
   while(1){
     pos_get_message();
   }
 }
 
+void InitLed(void){
+  config_pin(LED_PORT,LED_PIN,OUTPUT_PUSH_PULL,PULL_DOWN);
+}
 
 
-void Task1_Proc(pos_process_message_type msg_type,pos_process_message_content msg_cont,_PID src){
+void Task1_Proc(pos_process_message_type msg_type,pos_process_message_content msg_cont,pos_pid_type src){
   switch(msg_type){
   case POS_TASK_STARTUP:
     {
       uint32_t tid;
+      InitLed();
       pos_add_timer(1000,&tid,1,TIMER_MODE_PERIODICALLY);
       pos_start_timer(tid);
     }
     break;
   case POS_TASK_TIMER:
-    led_toggle();
+    toggle_pin(LED_PORT,LED_PIN);
     break;
   }
   

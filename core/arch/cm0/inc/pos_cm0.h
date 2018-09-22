@@ -39,19 +39,6 @@ SOFTWARE.
 #define _POS_CS_H_
 
 
-#define SCB_ICSR_PENDSVSET      (1UL << 28)
-#define SCB_ICSR_PENDSVCLR      (1UL << 27)
-
-#define SCB_ICSR_PENDSTSET      (1UL << 26)
-#define SCB_ICSR_PENDSTCLR      (1UL << 25)
-
-
-#define  __pos_clear_pending_cs() SCB->ICSR |= SCB_ICSR_PENDSVCLR  /* Clear pending PendSV */
-#define  __pos_do_cs() SCB->ICSR |= SCB_ICSR_PENDSVSET  /* Trigger PendSV which performs the actual context switch: */
-#define  __pos_clear_systick() SCB->ICSR |= SCB_ICSR_PENDSTCLR  /* Clear pending SysTick */
-#define  __pos_get_stacking_size() 64
-#define  __pos_cpu_sleep_ins()   __WFI()/* Standby CPU */
-
 extern int32_t __primask_value_cnt;
 
 #define _SCV(num) asm volatile ("svc %[svc_num]" : : [svc_num]"I"(num));
@@ -103,7 +90,7 @@ void SVC_Handler(void);
   
 void SysTick_Handler(void);
 void pos_arch_init(void);
-void pos_init_stack(_PID pid,uint8_t * stack,size_t stack_size,task_start_handler_t start_handler);
+void pos_init_stack(pos_pid_type pid,uint8_t * stack,size_t stack_size,task_start_handler_t start_handler);
 uint32_t pos_get_stacking_size(void);
 
 void pos_goto_unprivilleged_mode(uint32_t * stack);

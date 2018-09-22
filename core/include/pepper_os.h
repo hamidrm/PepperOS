@@ -43,6 +43,7 @@ SOFTWARE.
 #include <string.h>
 #include "pos_utility.h"
 #include "pos_devices.h"
+#include _DEV_HAL_HEADER_2
 #include "pos_types.h"
 #include "pos_config.h"
 #include "pos_memory.h"
@@ -53,8 +54,10 @@ SOFTWARE.
 #include "pos_ipc.h"
 #include "pos_delay.h"
 #include "queue.h"
-#include _ARCH_HEADER
 #include "pos_console.h"
+#include _ARCH_HEADER
+
+#include "pos_extint.h"
 
 void pos_error(uint32_t error_no);
 uint32_t pos_get_last_error(void);
@@ -68,7 +71,6 @@ void pos_os_sys_call(PosSysCallType num,uint32_t * args);
 void pos_uart_sent(void);
 void pos_print(char * text);
 
-#define POS_HEAP_SIZE                   MEM_HEAP_SIZE
 #define POS_HEAP_REGION                 __section_end(CSTACK)
 
 #endif

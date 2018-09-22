@@ -55,7 +55,10 @@ Supported Devices List
   #define CM0
   #define ARCH_NAME_PREFIX      _cm0.h
   #define ARCH_NAME_PATH      cm0
-
+  #define DEV_TOTAL_RAM         4 KB
+  #define DEV_RAM_START_ADD     0x20000000
+  #define POS_TIMER
+  #define POS_GPIO
 #else
   #error "POS -> Unknow Target Device!"
 #endif
@@ -64,18 +67,20 @@ Supported Devices List
 #define _FILES_PREFIX    pos
 #define _HEADERS_SUFFIX    h
 #define DEVICE_PREFIX_PATH      ..\\hal
+#define DEVICE_PREFIX_PATH_2      ..\\..\\hal
 #define ARCH_DEVICE_PREFIX_PATH ..\\..\\..\\hal
-#define DEVICE_SUFFIX_INIT      _init.h
+
 #define DEVICE_SUFFIX_DEFS      _defs.h
-#define DEVICE_SUFFIX_HAL      _hal_wrapper.h
+#define DEVICE_SUFFIX_HAL      _hal.h
 
 
 #define DEVICE_HAL_SUFFIX_RCC      _rcc.h
 
-#define _DEV_INIT_HEADER   DEV_HEADER(DEVICE_SUFFIX_INIT)
+
 #define _DEV_DEFS_HEADER   DEV_HEADER(DEVICE_SUFFIX_DEFS)
 
 #define _DEV_HAL_HEADER    DEV_HEADER(DEVICE_SUFFIX_HAL)
+#define _DEV_HAL_HEADER_2    DEV_HEADER_2(DEVICE_SUFFIX_HAL)
 
 #define _DEV_INIT_HEADER_ARCH   DEV_HEADER_ARCH(DEVICE_SUFFIX_INIT)
 #define _DEV_DEFS_HEADER_ARCH   DEV_HEADER_ARCH(DEVICE_SUFFIX_DEFS)

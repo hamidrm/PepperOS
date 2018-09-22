@@ -38,7 +38,6 @@ SOFTWARE.
 #include "pepper_os.h"
 #include "pos_timer.h"
 #include _DEV_HAL_HEADER
-#include _DEV_INIT_HEADER
 #include _ARCH_HEADER
 
 
@@ -50,7 +49,7 @@ static PosStatusType pos_timer_mem_alloc(void ** new_timer);
 static void pos_timer_mem_free(void * _timer);
 static void pos_update_timers(int elapsed);
 static void pos_set_expire_timer(uint32_t time_ms);
-static PosStatusType pos__add_timer(uint32_t org_time,uint32_t time,timer_id_t id,_PID pid,uint8_t mode,uint8_t status);
+static PosStatusType pos__add_timer(uint32_t org_time,uint32_t time,timer_id_t id,pos_pid_type pid,uint8_t mode,uint8_t status);
 
 
 
@@ -78,10 +77,10 @@ uint8_t pos_kill_timer(uint32_t id){
           before->next = ct->next;
           pos_timer_mem_free(ct);
         }
-        pos_update_timers(timer_a_get_reload_val());
+        pos_update_timers(timer_get_reload_val(POS_TIMER0));
         if(TIMER_STATE && timer_ll_head==0){
           TIMER_STATE=0;
-          timer_a_disable();
+          timer_disable(POS_TIMER0);
         }
         POS_END_KCRITICAL;
         return 1;
@@ -105,7 +104,7 @@ void pos_kill_all_timers(void){
     }
     timer_ll_head=0;
     TIMER_STATE=0;
-    timer_a_disable();
+    timer_disable(POS_TIMER0);
     POS_END_KCRITICAL;
 }
 
@@ -115,11 +114,11 @@ uint8_t pos_start_timer(uint32_t id){
     while (ct) {
       if(ct->timerId==id){
         ct->complete_time = ct->otime;
-        ct->time = (ct->otime>TIMER_MAX_INTERVAL)?TIMER_MAX_INTERVAL:ct->otime;
+        ct->time = (ct->otime>TIMER_MAX_VALUE)?TIMER_MAX_VALUE:ct->otime;
         ct->status = TIMER_STATUS_RUNNING;
         if(!TIMER_STATE){
           TIMER_STATE=1;
-          timer_a_enable();
+          timer_enable(POS_TIMER0);
         }
         POS_END_KCRITICAL;
         return 1;
@@ -153,7 +152,7 @@ uint8_t pos_stop_timer(uint32_t id){
     while (ct) {
       if(ct->timerId==id){
         ct->status = TIMER_STATUS_STOP;
-        pos_update_timers(timer_a_get_reload_val());
+        pos_update_timers(timer_get_reload_val(POS_TIMER0));
         POS_END_KCRITICAL;
         return 1;
       }
@@ -163,7 +162,7 @@ uint8_t pos_stop_timer(uint32_t id){
     return 0;
 }
 
-PosStatusType pos_add_timer(uint32_t time,timer_id_t *id,_PID pid,uint8_t mode) {
+PosStatusType pos_add_timer(uint32_t time,timer_id_t *id,pos_pid_type pid,uint8_t mode) {
   uint32_t cid=0xFFFFFFFF;
   PosStatusType res;
   _pos_timer_t * ct = timer_ll_head;
@@ -182,7 +181,7 @@ PosStatusType pos_add_timer(uint32_t time,timer_id_t *id,_PID pid,uint8_t mode) 
 }
 
 
-static PosStatusType pos__add_timer(uint32_t org_time,uint32_t time,timer_id_t id,_PID pid,uint8_t mode,uint8_t status) {
+static PosStatusType pos__add_timer(uint32_t org_time,uint32_t time,timer_id_t id,pos_pid_type pid,uint8_t mode,uint8_t status) {
 	_pos_timer_t * nt;
 	_pos_timer_t * ct = timer_ll_head;
 	_pos_timer_t * befor = 0;
@@ -191,7 +190,7 @@ static PosStatusType pos__add_timer(uint32_t org_time,uint32_t time,timer_id_t i
           if (ct->time > time) {
             if(!befor){
               nt->next = ct;
-              nt->time = (time>TIMER_MAX_INTERVAL)?TIMER_MAX_INTERVAL:time;
+              nt->time = (time>TIMER_MAX_VALUE)?TIMER_MAX_VALUE:time;
               nt->pid = pid;
               nt->timerId = id;
               nt->otime = org_time;
@@ -204,7 +203,7 @@ static PosStatusType pos__add_timer(uint32_t org_time,uint32_t time,timer_id_t i
               nt->pid = pid;
               befor->next = nt;
               nt->next = ct;
-              nt->time = (time>TIMER_MAX_INTERVAL)?TIMER_MAX_INTERVAL:time;
+              nt->time = (time>TIMER_MAX_VALUE)?TIMER_MAX_VALUE:time;
               nt->timerId = id;
               nt->otime = org_time;
               nt->complete_time = time;
@@ -219,7 +218,7 @@ static PosStatusType pos__add_timer(uint32_t org_time,uint32_t time,timer_id_t i
 	if (timer_ll_head==0) {
           nt->next = 0;
           nt->pid = pid;
-          nt->time = (time>TIMER_MAX_INTERVAL)?TIMER_MAX_INTERVAL:time;
+          nt->time = (time>TIMER_MAX_VALUE)?TIMER_MAX_VALUE:time;
           nt->timerId = id;
           nt->otime = org_time;
           nt->complete_time = time;
@@ -229,7 +228,7 @@ static PosStatusType pos__add_timer(uint32_t org_time,uint32_t time,timer_id_t i
 	}else{
           nt->next = 0;
           nt->pid = pid;
-          nt->time = (time>TIMER_MAX_INTERVAL)?TIMER_MAX_INTERVAL:time;
+          nt->time = (time>TIMER_MAX_VALUE)?TIMER_MAX_VALUE:time;
           nt->timerId = id;
           nt->otime = org_time;
           nt->complete_time = time;
@@ -259,24 +258,24 @@ static void pos_update_timers(int elapsed) {
 
 
 
-void POS_TIMER_A_EVENT(void){
+void pos_timer_int_isr(void){
     _pos_timer_t * before ;
     uint32_t time_org,time_total,time_id;
-    _PID pid;
+    pos_pid_type pid;
     uint8_t mode,status;
     POS_BEGIN_KCRITICAL;
     if(timer_ll_head==0){
       if(TIMER_STATE){
         TIMER_STATE=0;
-        timer_a_disable();
+        timer_disable(POS_TIMER0);
       }
-      timer_a_reset_elapsed_status();
+      timer_reset_elapsed_status(POS_TIMER0);
       POS_END_KCRITICAL;
       return;
     }
-    if (timer_a_get_elapsed_status())
+    if (timer_get_elapsed_status(POS_TIMER0))
     {
-      timer_a_reset_elapsed_status();
+      timer_reset_elapsed_status(POS_TIMER0);
         if(timer_ll_head != 0){
           pos_update_timers(timer_ll_head->time);
         before = timer_ll_head;
@@ -324,7 +323,7 @@ void POS_TIMER_A_EVENT(void){
     }
     if(TIMER_STATE && timer_ll_head==0){
       TIMER_STATE=0;
-      timer_a_disable();
+      timer_disable(POS_TIMER0);
     }
     
     POS_END_KCRITICAL;
@@ -333,12 +332,12 @@ void POS_TIMER_A_EVENT(void){
 
 
 static void pos_set_expire_timer(uint32_t time_ms){
-  timer_a_set_reload_val(time_ms);
+  timer_set_reload_val(POS_TIMER0,time_ms);
 }
 
 
 void pos_init_timers(void){
-  timer_a_init();
+  timer_init(POS_TIMER0,(((SYS_FREQ)/1000) - 1),pos_timer_int_isr);
   TIMER_STATE = 0; 
 }
 

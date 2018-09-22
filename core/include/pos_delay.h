@@ -40,7 +40,7 @@ SOFTWARE.
 
 
 PosStatusType pos_delay_init(void);
-PosStatusType pos_delay_add(_PID pid,uint32_t time_ms,PosTaskStatus status);
-PosStatusType pos_delay_remove(_PID pid);
+PosStatusType pos_delay_add(pos_pid_type pid,uint32_t time_ms,PosTaskStatus status);
+PosStatusType pos_delay_remove(pos_pid_type pid);
 void pos_delay_tick(void);
 #endif

@@ -38,10 +38,7 @@ SOFTWARE.
 #ifndef _TIMER_MANAGER_H_
 #define _TIMER_MANAGER_H_
 
-
-
-
-PosStatusType pos_add_timer(uint32_t time,timer_id_t *id,_PID pid,uint8_t mode) ;
+PosStatusType pos_add_timer(uint32_t time,timer_id_t *id,pos_pid_type pid,uint8_t mode) ;
 uint8_t pos_kill_timer(timer_id_t tid);
 uint8_t pos_start_timer(timer_id_t tid);
 uint8_t pos_resume_timer(timer_id_t tid);

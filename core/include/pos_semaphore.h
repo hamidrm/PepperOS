@@ -41,5 +41,5 @@ SOFTWARE.
 PosStatusType pos_semaphore_init(pos_semaphore_t *s,int16_t iv);
 PosStatusType pos_semaphore_wait(pos_semaphore_t *s);
 PosStatusType pos_semaphore_wait_until(pos_semaphore_t *s,uint32_t time_ms);
-PosStatusType pos_semaphore_signal(pos_semaphore_t *s,_PID * pid);
+PosStatusType pos_semaphore_signal(pos_semaphore_t *s,pos_pid_type * pid);
 #endif

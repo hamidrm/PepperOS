@@ -45,9 +45,9 @@ SOFTWARE.
 #include _DEV_HAL_HEADER
 #include _ARCH_HEADER
 
-PosStatusType pos_ipc_enq(_PID pid,pos_process_message_t * m);
-PosQueueSTatus pos_ipc_deq(_PID pid,pos_process_message_t * res);
-static pos_process_message_queue_t * __mq[MAX_PROCCESS_NUM]={NULL};
+PosStatusType pos_ipc_enq(pos_pid_type pid,pos_process_message_t * m);
+PosQueueSTatus pos_ipc_deq(pos_pid_type pid,pos_process_message_t * res);
+static pos_process_message_queue_t * volatile __mq[MAX_PROCCESS_NUM]={NULL};
 static pos_semaphore_t               __mqs[MAX_PROCCESS_NUM];
 
 
@@ -62,7 +62,7 @@ PosStatusType pos_ipc_init(void){
 }
 
 
-PosStatusType pos_send_message(_PID target,	pos_process_message_type message_type,pos_process_message_content message_content){
+PosStatusType pos_send_message(pos_pid_type target,	pos_process_message_type message_type,pos_process_message_content message_content){
 	pos_process_message_t e;
 #if     MAX_IPC_MESSAGES_NUM > 0
         uint32_t messages_cnt=0;
@@ -89,7 +89,7 @@ PosStatusType pos_send_message(_PID target,	pos_process_message_type message_typ
 
 PosStatusType pos_get_message(void){
         pos_process_message_t pmsg;
-        _PID pid = _pos_get_current_pid();
+        pos_pid_type pid = _pos_get_current_pid();
         POS_ASSERT(pos_get_current_task()->proc_fun != NULL_PTR);
         POS_ASSERT(pos_semaphore_wait(&__mqs[pid-1]) == POS_OK);
 	POS_ASSERT_SEND_ERROR(pos_ipc_deq(pid,&pmsg) == POS_QUEUE_NOT_EMPTY,POS_OS_QUEUE_EMPTY);
@@ -97,23 +97,23 @@ PosStatusType pos_get_message(void){
         return POS_OK;
 }
 
-PosStatusType pos_ipc_enq(_PID pid,pos_process_message_t * m){
+PosStatusType pos_ipc_enq(pos_pid_type pid,pos_process_message_t * m){
 	pos_process_message_queue_t *q = __mq[pid-1];
 	pos_process_message_queue_t *temp_element;
 	POS_BEGIN_KCRITICAL;	
 	if(q==NULL){
-		__mq[pid-1] = ( pos_process_message_queue_t *)pmalloc(sizeof(pos_process_message_queue_t));
-                POS_ASSERT(__mq[pid-1] != NULL_PTR);
-		__mq[pid-1]->element.src = m->src;
-		__mq[pid-1]->element.message_type = m->message_type;
-                __mq[pid-1]->element.message_content = m->message_content;
-		__mq[pid-1]->next = NULL;
-		POS_END_KCRITICAL;
-		return POS_OK;
+          __mq[pid-1] = ( pos_process_message_queue_t *)pmalloc(sizeof(pos_process_message_queue_t));
+          POS_ASSERT(__mq[pid-1] != NULL_PTR);
+          __mq[pid-1]->element.src = m->src;
+          __mq[pid-1]->element.message_type = m->message_type;
+          __mq[pid-1]->element.message_content = m->message_content;
+          __mq[pid-1]->next = NULL;
+          POS_END_KCRITICAL;
+          return POS_OK;
 	}
 	while(q){
-		temp_element = (pos_process_message_queue_t *)(q);
-		q=(pos_process_message_queue_t *)(temp_element->next);
+          temp_element = (pos_process_message_queue_t *)(q);
+          q=(pos_process_message_queue_t *)(temp_element->next);
 	}
 	temp_element->next = (pos_process_message_queue_t *)pmalloc(sizeof(pos_process_message_queue_t));
         POS_ASSERT(temp_element->next != NULL_PTR);
@@ -127,7 +127,7 @@ PosStatusType pos_ipc_enq(_PID pid,pos_process_message_t * m){
 }
 
 
-PosQueueSTatus pos_ipc_deq(_PID pid,pos_process_message_t * res){
+PosQueueSTatus pos_ipc_deq(pos_pid_type pid,pos_process_message_t * res){
 	
 	pos_process_message_queue_t * q = __mq[pid-1];
 	pos_process_message_queue_t *temp_element;

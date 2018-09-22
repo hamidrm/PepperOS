@@ -38,12 +38,12 @@ SOFTWARE.
 #define _POS_MEMORY_H_
 
 
-#define POS_MEMORY_HEAP_MAP_SIZE        ((POS_HEAP_SIZE/POS_MEMORY_BLOCK_CNT)>>3)
+#define POS_HEAP_SIZE   (DEV_TOTAL_RAM - (((uint32_t)__sfe("CSTACK")) - DEV_RAM_START_ADD))
+#define POS_MEMORY_HEAP_MAP_SIZE        (POS_HEAP_SIZE/33)
 #define POS_MEMORY_HEAP_SIZE    ( POS_MEMORY_HEAP_MAP_SIZE * POS_MEMORY_BLOCK_SIZE )
 #define POS_MEMORY_ALLOCATOR_START ((uint32_t)__heap_region)
 #define POS_MEMORY_ALLOCATOR_SIZE POS_MEMORY_HEAP_MAP_SIZE
-#define POS_MEMORY_REGION_START		 (POS_MEMORY_ALLOCATOR_SIZE+POS_MEMORY_ALLOCATOR_START)
-
+#define POS_MEMORY_REGION_START		 (POS_MEMORY_ALLOCATOR_SIZE + ((4 - POS_MEMORY_ALLOCATOR_SIZE * 33) % 4) + POS_MEMORY_ALLOCATOR_START)
 
 
 #ifdef POS_MEMORY_BLOCK_SIZE_16
@@ -63,8 +63,8 @@ SOFTWARE.
 void * pmalloc(size_t size);
 void pfree(void * _a);
 size_t pget_var_size(void * _a);
-PosStatusType pmemcpy(void * dst,pos_t dst_offset,void * src,pos_t src_offset,size_t len);
-PosStatusType pmemset(void * dst,pos_t dst_offset,size_t len,uint8_t value);
+PosStatusType pmemcpy(void * dst,uint32_t dst_offset,void * src,uint32_t src_offset,size_t len);
+PosStatusType pmemset(void * dst,uint32_t dst_offset,size_t len,uint8_t value);
 PosStatusType init_pos_memory(void);
 size_t get_mem_used(void);
 size_t get_mem_total(void);

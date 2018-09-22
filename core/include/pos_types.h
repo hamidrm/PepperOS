@@ -56,6 +56,7 @@ SOFTWARE.
 #define POS_PID_BASE 1;
 #define NULL_PTR    0
 #define POS_KERNEL_MESSAGES_OFFSET      0x80000000
+#define POS_USER_MESSAGES_OFFSET      0x00000000
 #define POS_KERNEL_PID    0
 #define POS_MUTEX_INVALID               0xFFFFFFFF
 #define POS_TASK_HIGH_PRIORITY_QUANTUM  (MEAN_QUANTUM_LENGTH * 1.25)
@@ -73,16 +74,15 @@ SOFTWARE.
 #define POS_ERROR_POS_OFFSET    0x30000000
 
 
-typedef uint16_t _PID;
+typedef uint16_t pos_pid_type;
 typedef uint32_t pos_process_message_type;
 typedef uint32_t pos_process_message_content;
 typedef uint32_t time_value;
 typedef uint32_t timer_id_t;
 typedef uint32_t handle;
-typedef uint32_t pos_t;
 typedef uint32_t pos_mutex_id_t;
-typedef void(*task_start_handler_t)(_PID);
-typedef void(*task_msg_proc_t)(pos_process_message_type,pos_process_message_content,_PID src);
+typedef void(*task_start_handler_t)(pos_pid_type);
+typedef void(*task_msg_proc_t)(pos_process_message_type,pos_process_message_content,pos_pid_type src);
 typedef struct _pos_scheduler_t pos_scheduler_t;
 typedef struct pos_timer_t _pos_timer_t;
 typedef struct _pos_semaphore_queue_t pos_semaphore_queue_t;
@@ -103,6 +103,7 @@ typedef enum
   POS_TASK_SUICIDE,
   POS_TASK_TIMER ,
   POS_TASK_CONSOLE_RX ,
+  POS_TASK_EXT_INT ,
 } PosKernelMessagesType;
 typedef enum 
 {
@@ -180,7 +181,7 @@ typedef enum {
 }PosQueueSTatus;
 
 typedef struct {
-  _PID          pid;
+  pos_pid_type          pid;
   union{
     uint8_t     dummy[2];
     uint16_t    stack_size;
@@ -197,14 +198,14 @@ typedef struct {
 }pos_task_type;
 
 struct _pos_semaphore_queue_t{
-	_PID	pid;
+	pos_pid_type	pid;
 	pos_semaphore_queue_t * next;
 } ;
 
 
 typedef struct{
 	int16_t cnt;
-        _PID released_task;
+        pos_pid_type released_task;
 	pos_semaphore_queue_t * q;
 }pos_semaphore_t;
 
@@ -223,13 +224,13 @@ struct pos_timer_t {
         uint32_t		complete_time;
         uint8_t                 status;
         _pos_timer_t *        next;
-        _PID            pid;
+        pos_pid_type            pid;
         uint8_t         dummy[2];
 };
 
 
 struct pos_delay_t{
-  _PID pid;
+  pos_pid_type pid;
   int32_t elapsed_time;
   _pos_delay_t * next;
   uint16_t dummy;
@@ -238,7 +239,7 @@ struct pos_delay_t{
 
 
 typedef struct{
-	_PID src;
+	pos_pid_type src;
 	pos_process_message_type message_type;
         pos_process_message_content message_content;
 } pos_process_message_t;
@@ -260,6 +261,12 @@ typedef struct {
   pos_semaphore_t * sem;
 } pos_queue_t;
 
+typedef struct{
+  pos_pid_type  pid;
+  PosPorts      port;
+  PosPinsNumber pin;
+  uint32_t       is_active;
+} PosExtIntType;
 
 struct _pos_process_message_queue_t{
 	pos_process_message_t element;

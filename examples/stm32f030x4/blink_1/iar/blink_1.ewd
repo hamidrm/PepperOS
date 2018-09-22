@@ -987,7 +987,7 @@
                 </option>
                 <option>
                     <name>CCSTLinkDAPNumber</name>
-                    <state></state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OCDriverInfo</name>

@@ -39,7 +39,6 @@ SOFTWARE.
 #include "pepper_os.h"
 
 #include _DEV_HAL_HEADER
-#include _DEV_INIT_HEADER
 
 #if USE_CONSOLE == TRUE
 static pos_hw_uart_t pos_uart;
@@ -47,7 +46,7 @@ static uint16_t bytes_remained;
 static uint16_t bytes_cnt;
 static pos_queue_t * console_queue;
 static uint8_t is_sending = 0;
-static _PID     recv_pid;
+static pos_pid_type     recv_pid;
 static uint8_t * tx_buffer=NULL_PTR;
 static void data_sent(void);
 
@@ -67,7 +66,7 @@ void pos_console_init(void){
 }
 
 
-void pos_console_rx_register(_PID pid){
+void pos_console_rx_register(pos_pid_type pid){
   recv_pid = pid;
 }
 
@@ -110,7 +109,7 @@ void pos_console_print(const char * text,uint8_t len){
   uart_write(&pos_uart,tx_buffer[bytes_cnt++]);
 }
 
-void uart_sent(void){
+void uart_isr(void){
   PosUartIntFlags flags;
   uart_get_int_type(&pos_uart,&flags);
   if(flags & POS_UART_INT_FLAG_DATA_SENT)

@@ -62,7 +62,7 @@ PosOsMode os_mode;
 static pos_scheduler_t * tasks_scheduler_head;
 
 
-extern inline void pos_force_goto_task(_PID pid);
+extern inline void pos_force_goto_task(pos_pid_type pid);
 
 void pos_scheduler_start(void){
   if(tasks_scheduler_head){
@@ -107,7 +107,7 @@ void pos_scheduler_init(void){
   __quantum_cur_len = MEAN_QUANTUM_LENGTH;
 }
 
-PosStatusType pos_schedule_init_task(task_start_handler_t start_handler,task_msg_proc_t proc_handler,uint8_t * stack,size_t stack_size,PosTaskPriority priority,_PID * pid){
+PosStatusType pos_schedule_init_task(task_start_handler_t start_handler,task_msg_proc_t proc_handler,uint8_t * stack,size_t stack_size,PosTaskPriority priority,pos_pid_type * pid){
   pos_scheduler_t * current_element = tasks_scheduler_head;
   pos_scheduler_t * new_element = (pos_scheduler_t *)pmalloc(sizeof(pos_scheduler_t));
   POS_ASSERT(new_element != NULL_PTR);
@@ -168,7 +168,7 @@ void pos_task_finish(void){
   POS_END_KCRITICAL;
 }
 
-_PID _pos_get_current_pid(void){
+pos_pid_type _pos_get_current_pid(void){
   return current_task_element->task.pid;
 }
 
@@ -176,11 +176,11 @@ void pos_get_total_elapsed_time(uint64_t *time){
   *time = elapsed_times.total_elapsed_time;
 }
 
-void pos_get_task_elapsed_time(_PID pid,uint32_t *time){
+void pos_get_task_elapsed_time(pos_pid_type pid,uint32_t *time){
   *time = pos_get_task_by_pid(pid)->time_elapsed_active;
 }
 
-void pos_kill_task(_PID pid){
+void pos_kill_task(pos_pid_type pid){
   pos_scheduler_t * previuse_element = NULL;
   pos_scheduler_t * current_element = tasks_scheduler_head;
   POS_BEGIN_KCRITICAL;
@@ -205,7 +205,7 @@ void pos_kill_task(_PID pid){
 
 
 
-pos_task_type * pos_get_task_by_pid(_PID pid){
+pos_task_type * pos_get_task_by_pid(pos_pid_type pid){
   
     pos_scheduler_t * current_element = tasks_scheduler_head;
 
@@ -224,7 +224,7 @@ pos_task_type * pos_get_current_task(void){
   return &(current_task_element->task);
 }
 
-inline void pos_force_goto_task(_PID pid){
+inline void pos_force_goto_task(pos_pid_type pid){
     pos_scheduler_t * current_element = tasks_scheduler_head;
     os_mode = POS_KERNEL_ACTIVE;
     __current_task = &(current_task_element->task);
@@ -328,7 +328,7 @@ void pos_force_cs(void){
 /*
   Force context switch to the pid
 */
-void pos_force_cs_by_pid(_PID pid){
+void pos_force_cs_by_pid(pos_pid_type pid){
   os_mode = POS_KERNEL_ACTIVE;
   if(__mt){
       pos_reset_task_timer();
