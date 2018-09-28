@@ -130,12 +130,32 @@ uint8_t pos_start_timer(uint32_t id){
 }
 
 
+
+uint8_t pos_restart_timer(uint32_t id){
+    _pos_timer_t * ct = timer_ll_head;
+    POS_BEGIN_KCRITICAL;
+    while (ct) {
+      if(ct->timerId==id){
+        pos_update_timers(timer_get_reload_val(POS_TIMER0));
+        ct->time = ct->otime;
+        ct->complete_time  = ct->otime;
+        POS_END_KCRITICAL;
+        return 1;
+      }
+      ct = ct->next;
+    }
+    POS_END_KCRITICAL;
+    return 0;
+}
+
+
 uint8_t pos_resume_timer(uint32_t id){
     _pos_timer_t * ct = timer_ll_head;
     POS_BEGIN_KCRITICAL;
     while (ct) {
       if(ct->timerId==id){
         ct->status = TIMER_STATUS_RUNNING;
+        pos_update_timers(timer_get_reload_val(POS_TIMER0));
         POS_END_KCRITICAL;
         return 1;
       }
@@ -162,20 +182,41 @@ uint8_t pos_stop_timer(uint32_t id){
     return 0;
 }
 
+
 PosStatusType pos_add_timer(uint32_t time,timer_id_t *id,pos_pid_type pid,uint8_t mode) {
-  uint32_t cid=0xFFFFFFFF;
+  uint32_t new_tid=0;
   PosStatusType res;
   _pos_timer_t * ct = timer_ll_head;
+  uint8_t tid_not_found;
   POS_BEGIN_KCRITICAL;
-  while (ct) {
-    if(ct->timerId==cid+1){
-       cid = ct->timerId;
-       ct = ct->next;
-    }else break;
+
+  
+  while(new_tid<0xFFFFFFFF){
+    tid_not_found = TRUE;
+    ct = timer_ll_head;
+    while (ct) {
+      if(ct->timerId==new_tid){
+         tid_not_found = FALSE;
+         break;
+      }
+      ct = ct->next;
+    }
+    if(tid_not_found)
+      break;
+    new_tid++;
   }
-  cid++;
-  *id = cid;
- res = pos__add_timer(time,time,cid,pid,mode,TIMER_STATUS_STOP);
+ 
+ *id = new_tid;
+ 
+ pos_update_timers(timer_get_current_val(POS_TIMER0));
+ 
+ res = pos__add_timer(time,time,new_tid,pid,mode,TIMER_STATUS_STOP);
+ 
+ timer_set_current_val(POS_TIMER0,0);
+ 
+ if(timer_get_reload_val(POS_TIMER0) == 0)
+   pos_timer_int_isr(1); // Force to analyse who's expired?
+ 
  POS_END_KCRITICAL;
  return res;
 }
@@ -238,6 +279,7 @@ static PosStatusType pos__add_timer(uint32_t org_time,uint32_t time,timer_id_t i
         }
 eoff:
         pos_set_expire_timer(timer_ll_head->time);
+        
         return POS_OK;
 }
 
@@ -258,7 +300,7 @@ static void pos_update_timers(int elapsed) {
 
 
 
-void pos_timer_int_isr(void){
+void pos_timer_int_isr(uint8_t int_type){
     _pos_timer_t * before ;
     uint32_t time_org,time_total,time_id;
     pos_pid_type pid;
@@ -273,7 +315,7 @@ void pos_timer_int_isr(void){
       POS_END_KCRITICAL;
       return;
     }
-    if (timer_get_elapsed_status(POS_TIMER0))
+    if ( int_type == 1)
     {
       timer_reset_elapsed_status(POS_TIMER0);
         if(timer_ll_head != 0){
@@ -297,6 +339,7 @@ void pos_timer_int_isr(void){
           }else{
             if(timer_ll_head->status == TIMER_STATUS_RUNNING)
               pos_send_message(timer_ll_head->pid,POS_TASK_TIMER,timer_ll_head->timerId);
+
             if(timer_ll_head->mode == TIMER_MODE_PERIODICALLY){
                 time_org = timer_ll_head->otime;
                 time_id = timer_ll_head->timerId;
@@ -328,8 +371,6 @@ void pos_timer_int_isr(void){
     
     POS_END_KCRITICAL;
 }
-
-
 
 static void pos_set_expire_timer(uint32_t time_ms){
   timer_set_reload_val(POS_TIMER0,time_ms);

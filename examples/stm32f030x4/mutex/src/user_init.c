@@ -27,21 +27,26 @@ SOFTWARE.
 
 
 /**
- *  @file    task2.h
+ *  @file    user_init.c
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief Send a blink LED message to Task1 every 1 s.
+ *  @brief Initializing PepperOS (and other things that user wants) and creating needed tasks.
+ *      In this example , PepperOS handles two task to blinks 3 LED.
  *
  */
 
-#ifndef _TASK2_H_
-#define _TASK2_H_
+#include "pepper_os.h"
 
+#include "task1.h"
+#include "task2.h"
 
+uint8_t s1[512];
+uint8_t s2[512];
 
-void Task2_Main(pos_pid_type pid);
-void Task2_Proc(pos_process_message_type,pos_process_message_content,pos_pid_type src);
-
-
-#endif
+void main(void){
+  pos_init();
+  pos_create_task(Task1_Main,NULL,s1,512,POS_TASK_HIGH_PRIORITY);
+  pos_create_task(Task2_Main,NULL,s2,512,POS_TASK_HIGH_PRIORITY);
+  pos_scheduler_start(); 
+}

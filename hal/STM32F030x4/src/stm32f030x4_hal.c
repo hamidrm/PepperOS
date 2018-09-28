@@ -116,5 +116,5 @@ void stm32f030x4_init(void){
     clock_config();
     HAL_NVIC_SetPriority(PendSV_IRQn, 0xff,0); /* Lowest possible priority */
     HAL_NVIC_SetPriority(SysTick_IRQn, 0x00,0); /* Highest possible priority */
-    HAL_NVIC_SetPriority(SVC_IRQn, 0x01,0); /* High priority */
+    HAL_NVIC_SetPriority(SVC_IRQn, 0x02,0); /* High priority */
 }

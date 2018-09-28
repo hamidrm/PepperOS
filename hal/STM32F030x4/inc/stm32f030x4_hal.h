@@ -60,7 +60,7 @@ SOFTWARE.
 #define  __pos_do_cs() SCB->ICSR |= SCB_ICSR_PENDSVSET  /* Trigger PendSV which performs the actual context switch: */
 #define  __pos_clear_systick() SCB->ICSR |= SCB_ICSR_PENDSTCLR  /* Clear pending SysTick */
 #define  __pos_get_stacking_size() 64
-#define  __pos_cpu_sleep_ins()   __WFI()/* Standby CPU */
+#define  __pos_cpu_sleep_ins()   __WFE()/* Standby CPU */
 
 
 

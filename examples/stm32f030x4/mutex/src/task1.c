@@ -27,21 +27,37 @@ SOFTWARE.
 
 
 /**
- *  @file    task2.h
+ *  @file    task1.c
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief Send a blink LED message to Task1 every 1 s.
+ *  @brief Send a string to UART project (Example projects)
+ *      UART_TX -> PA9
+ *      UART_RX -> PA10
  *
  */
 
-#ifndef _TASK2_H_
-#define _TASK2_H_
+#include "pepper_os.h"
+#include "task1.h"
+#include "shared.h"
 
+pos_pid_type task1_pid;
+pos_mutex_id_t test_mutex;
 
-
-void Task2_Main(pos_pid_type pid);
-void Task2_Proc(pos_process_message_type,pos_process_message_content,pos_pid_type src);
-
-
+void Task1_Main(pos_pid_type pid){
+  task1_pid = pid;
+  pos_mutex_create(&test_mutex);
+  pos_delay_ms(1000);
+  while(1){
+    pos_delay_ms(1000);
+#if RUN_WITH_MUTEX == TRUE
+    pos_mutex_acquire(&test_mutex);
 #endif
+    print("(T1):Started!\n",14);
+    for(int i=0;i<0xFFFFFF;i++);
+    print("(T1):Finished!\n",15);
+#if RUN_WITH_MUTEX == TRUE
+    pos_mutex_release(&test_mutex);
+#endif
+  }
+}

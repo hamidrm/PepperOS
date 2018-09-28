@@ -27,21 +27,32 @@ SOFTWARE.
 
 
 /**
- *  @file    task2.h
+ *  @file    task1.h
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief Send a blink LED message to Task1 every 1 s.
+ *  @brief LED Blinking project (Example projects)
+ *      LED_RED -> PA5
+ *      LED_GREEN -> PA6
+ *      LED_BLUE -> PA7
  *
  */
 
-#ifndef _TASK2_H_
-#define _TASK2_H_
+#ifndef _TASK1_H_
+#define _TASK1_H_
 
+#define MAX_RX_BUFFER_LEN       32
 
+#define LED_RED_PORT         PORTA
+#define LED_GREEN_PORT       PORTA
+#define LED_BLUE_PORT        PORTA
 
-void Task2_Main(pos_pid_type pid);
-void Task2_Proc(pos_process_message_type,pos_process_message_content,pos_pid_type src);
+#define LED_RED_PIN         PIN7
+#define LED_GREEN_PIN       PIN6
+#define LED_BLUE_PIN        PIN5
+
+void Task1_Main(pos_pid_type pid);
+void Task1_Proc(pos_process_message_type,pos_process_message_content,pos_pid_type src);
 
 
 #endif

@@ -97,7 +97,6 @@ void uart_get_int_type(pos_hw_uart_t * pos_uart,PosUartIntFlags * ints);
 void uart_read(pos_hw_uart_t * uart_params,uint8_t * data);
 void uart_init(pos_hw_uart_t * uart_params,PosUartList uart);
 void USART1_IRQHandler(void);
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle);
 __weak void uart_isr(void);
 
 #endif

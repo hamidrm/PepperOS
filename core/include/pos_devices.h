@@ -59,6 +59,7 @@ Supported Devices List
   #define DEV_RAM_START_ADD     0x20000000
   #define POS_TIMER
   #define POS_GPIO
+  #define POS_UART
 #else
   #error "POS -> Unknow Target Device!"
 #endif

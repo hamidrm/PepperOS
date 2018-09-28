@@ -31,38 +31,38 @@ SOFTWARE.
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief Simple UART project (Example projects)
- *      printing every 1 second.
+ *  @brief Send a string to UART project (Example projects)
+ *      UART_TX -> PA9
+ *      UART_RX -> PA10
+ *
  */
 
 #include "pepper_os.h"
+#include "task1.h"
+#include "shared.h"
 
-uint32_t tid;
-_PID _pid;
+pos_pid_type task1_pid;
+static uint32_t tid;
 
-
-void Task1_Main(_PID pid){
-  _pid = pid;
+void Task1_Main(pos_pid_type pid){
+  task1_pid = pid;
   while(1){
     pos_get_message();
   }
 }
 
 
-
-void Task1_Proc(pos_process_message_type msg_type,pos_process_message_content msg_cont,_PID src){
+void Task1_Proc(pos_process_message_type msg_type,pos_process_message_content msg_cont,pos_pid_type src){
   switch(msg_type){
   case POS_TASK_STARTUP:
-    pos_console_rx_register(_pid);
-    pos_add_timer(1000,&tid,1,TIMER_MODE_PERIODICALLY);
+    pos_console_rx_register(task1_pid);
+    pos_add_timer(1000,&tid,task1_pid,TIMER_MODE_PERIODICALLY);
     pos_start_timer(tid);
     break;
   case POS_TASK_TIMER:
     print("Hello World From Task 1!\r\n",26 );
     break; 
   case POS_TASK_CONSOLE_RX:
-    led_toggle();
     break;  
   }
-  
 }

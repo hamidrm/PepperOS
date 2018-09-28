@@ -69,8 +69,8 @@ void timer_init(PosTimerList timer,uint32_t prescale,int_isr_t isr){
     tim_int_idx = 3;
   }
   
-  if(isr != NULL)
-    ((TIM_TypeDef*)timer)->EGR |= TIM_EGR_UG;
+//  if(isr != NULL)
+//    ((TIM_TypeDef*)timer)->EGR |= TIM_EGR_UG;
   ((TIM_TypeDef*)timer)->PSC = prescale;
   
   if(isr != NULL)
@@ -80,19 +80,19 @@ void timer_init(PosTimerList timer,uint32_t prescale,int_isr_t isr){
   
   if(timer==POS_TIMER0){
     HAL_NVIC_EnableIRQ(TIM3_IRQn);
-    HAL_NVIC_SetPriority(TIM3_IRQn,0x00,0);
+    HAL_NVIC_SetPriority(TIM3_IRQn,0x01,0);
   }
   if(timer==POS_TIMER1){
     HAL_NVIC_EnableIRQ(TIM14_IRQn);
-    HAL_NVIC_SetPriority(TIM14_IRQn,0x00,0);
+    HAL_NVIC_SetPriority(TIM14_IRQn,0x01,0);
   }
   if(timer==POS_TIMER2){
     HAL_NVIC_EnableIRQ(TIM16_IRQn);
-    HAL_NVIC_SetPriority(TIM16_IRQn,0x00,0);
+    HAL_NVIC_SetPriority(TIM16_IRQn,0x01,0);
   }
   if(timer==POS_TIMER3){
     HAL_NVIC_EnableIRQ(TIM17_IRQn);
-    HAL_NVIC_SetPriority(TIM17_IRQn,0x00,0);
+    HAL_NVIC_SetPriority(TIM17_IRQn,0x01,0);
   }
 
 }
@@ -108,11 +108,20 @@ void timer_reset_elapsed_status(PosTimerList timer){
 
 void timer_set_reload_val(PosTimerList timer,uint32_t value){
   ((TIM_TypeDef*)timer)->ARR = value;
+  //((TIM_TypeDef*)timer)->CNT = 0;
 }
 
 
 uint32_t timer_get_reload_val(PosTimerList timer){
   return ((TIM_TypeDef*)timer)->ARR;
+}
+
+uint32_t timer_get_current_val(PosTimerList timer){
+  return ((TIM_TypeDef*)timer)->CNT;
+}
+
+void timer_set_current_val(PosTimerList timer,uint32_t value){
+  ((TIM_TypeDef*)timer)->CNT = value;
 }
 
 void timer_enable(PosTimerList timer){
@@ -150,25 +159,25 @@ void timer_disable_evt(PosTimerList timer){
 void TIM3_IRQHandler(void)
 {
   if(int_isr[0])
-    int_isr[0]();
+    int_isr[0]((TIM3->SR & TIM_SR_UIF)==0?0:1);
 }
 
 void TIM14_IRQHandler(void)
 {
   if(int_isr[1])
-    int_isr[1]();
+    int_isr[1]((TIM3->SR & TIM_SR_UIF)==0?0:1);
 }
 
 void TIM16_IRQHandler(void)
 {
   if(int_isr[2])
-    int_isr[2]();
+    int_isr[2]((TIM3->SR & TIM_SR_UIF)==0?0:1);
 }
 
 void TIM17_IRQHandler(void)
 {
   if(int_isr[3])
-    int_isr[3]();
+    int_isr[3]((TIM3->SR & TIM_SR_UIF)==0?0:1);
 }
 
 

@@ -639,7 +639,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>uart_1.srec</state>
+                    <state>uart_2.srec</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -682,7 +682,7 @@
                 <debug>1</debug>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>uart_1.out</state>
+                    <state>uart_2.out</state>
                 </option>
                 <option>
                     <name>IlinkLibIOConfig</name>
@@ -1656,7 +1656,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>uart_1.srec</state>
+                    <state>uart_2.srec</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -1699,7 +1699,7 @@
                 <debug>1</debug>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>uart_1.out</state>
+                    <state>uart_2.out</state>
                 </option>
                 <option>
                     <name>IlinkLibIOConfig</name>

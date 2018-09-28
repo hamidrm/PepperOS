@@ -27,21 +27,16 @@ SOFTWARE.
 
 
 /**
- *  @file    task2.h
+ *  @file    shared.c
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief Send a blink LED message to Task1 every 1 s.
+ *  @brief All definetions and variables that are shared.
  *
  */
 
-#ifndef _TASK2_H_
-#define _TASK2_H_
-
-
-
-void Task2_Main(pos_pid_type pid);
-void Task2_Proc(pos_process_message_type,pos_process_message_content,pos_pid_type src);
+#ifndef _SHARED_H_
+#define _SHARED_H_
 
 
 #endif

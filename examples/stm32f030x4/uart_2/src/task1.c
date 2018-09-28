@@ -31,11 +31,9 @@ SOFTWARE.
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief LED Blinking and button project (Example projects)
- *      LED_RED -> PA5
- *      LED_GREEN -> PA6
- *      LED_BLUE -> PA7
- *      Button -> PA9
+ *  @brief UART manager task (Example projects)
+ *      UART_TX -> PA9
+ *      UART_RX -> PA10
  *
  */
 
@@ -43,12 +41,15 @@ SOFTWARE.
 #include "task1.h"
 #include "shared.h"
 
-pos_pid_type task1_pid;
-uint8_t led_num;
-uint32_t tid,btn_debounce_timer;
-uint8_t order;
-
 void InitBoard(void);
+
+pos_pid_type task1_pid;
+static uint32_t tid;
+
+static uint8_t rx_buffer[MAX_RX_BUFFER_LEN];
+static uint8_t rx_recv_buffer_idx;
+static uint8_t uart_session_expired;
+
 void Task1_Main(pos_pid_type pid){
   task1_pid = pid;
   while(1){
@@ -60,70 +61,49 @@ void InitBoard(void){
   config_pin(LED_RED_PORT,LED_RED_PIN,OUTPUT_PUSH_PULL,PULL_DOWN);
   config_pin(LED_GREEN_PORT,LED_GREEN_PIN,OUTPUT_PUSH_PULL,PULL_DOWN);
   config_pin(LED_BLUE_PORT,LED_BLUE_PIN,OUTPUT_PUSH_PULL,PULL_DOWN);
-  pos_extint_add(BTN_PORT,BTN_PIN,EXTINT_FALLING,PULL_UP);
-  order = RED_TO_BLUE;
 }
 
 
 void Task1_Proc(pos_process_message_type msg_type,pos_process_message_content msg_cont,pos_pid_type src){
   switch(msg_type){
   case POS_TASK_STARTUP:
-    {
-      led_num = 0;
-      InitBoard();
-    }
-    break;
-    
-  case POS_TASK_EXT_INT:
-    {
-      order ^= 1;
-      pos_add_timer(50,&btn_debounce_timer,task1_pid,TIMER_MODE_ONE_SHOT);
-      pos_start_timer(btn_debounce_timer);
-    }
+    pos_console_rx_register(task1_pid);
+    rx_recv_buffer_idx = 0;
+    uart_session_expired = 1;
+    InitBoard();
     break;
   case POS_TASK_TIMER:
-    
-    if(btn_debounce_timer == msg_cont){
-      extint_release(BTN_PORT,BTN_PIN);
-      btn_debounce_timer = 0xFFFFFFFF;
-    }else{
-      switch(led_num){
-      case 0:
-        reset_pin(LED_RED_PORT,LED_RED_PIN);
-        break;
-      case 1:
-        reset_pin(LED_GREEN_PORT,LED_GREEN_PIN);
-        break;
-      case 2:
-        reset_pin(LED_BLUE_PORT,LED_BLUE_PIN);
-        break;  
-      }
-      if(order == RED_TO_BLUE){
-        led_num++;
-        led_num%=3;
-      }else{
-        if(led_num>0)
-          led_num--;
-        else
-          led_num = 2;
+    {
+      if(msg_cont == tid){
+        if(rx_recv_buffer_idx){
+          if(strcmp("RED LED ON\n",(char *)rx_buffer)==0)
+            set_pin(LED_RED_PORT,LED_RED_PIN);
+          else if(strcmp("RED LED OFF\n",(char *)rx_buffer)==0)
+            reset_pin(LED_RED_PORT,LED_RED_PIN);
+          else if(strcmp("GREEN LED ON\n",(char *)rx_buffer)==0)
+            set_pin(LED_GREEN_PORT,LED_GREEN_PIN);
+          else if(strcmp("GREEN LED OFF\n",(char *)rx_buffer)==0)
+            reset_pin(LED_GREEN_PORT,LED_GREEN_PIN);
+          else if(strcmp("BLUE LED ON\n",(char *)rx_buffer)==0)
+            set_pin(LED_BLUE_PORT,LED_BLUE_PIN);
+          else if(strcmp("BLUE LED OFF\n",(char *)rx_buffer)==0)
+            reset_pin(LED_BLUE_PORT,LED_BLUE_PIN);
+          print((char *)rx_buffer,rx_recv_buffer_idx );
+        }
+        rx_recv_buffer_idx = 0;
+        uart_session_expired = 1;
+        memset(rx_buffer,0,MAX_RX_BUFFER_LEN);
       }
     }
-    break;
-  case BLINK_LED_MESSAGE:
-    pos_add_timer(80,&tid,task1_pid,TIMER_MODE_ONE_SHOT);
-    pos_start_timer(tid);
-    switch(led_num){
-    case 0:
-      set_pin(LED_RED_PORT,LED_RED_PIN);
-      break;
-    case 1:
-      set_pin(LED_GREEN_PORT,LED_GREEN_PIN);
-      break;
-    case 2:
-      set_pin(LED_BLUE_PORT,LED_BLUE_PIN);
-      break;  
+    break; 
+  case POS_TASK_CONSOLE_RX:
+    if(rx_recv_buffer_idx < MAX_RX_BUFFER_LEN)
+      rx_buffer[rx_recv_buffer_idx++] = msg_cont;
+    if(uart_session_expired){
+      uart_session_expired = 0;
+      pos_add_timer(100,&tid,task1_pid,TIMER_MODE_ONE_SHOT);
+      pos_start_timer(tid);
     }
-    break;
+    break;  
   }
-  
 }

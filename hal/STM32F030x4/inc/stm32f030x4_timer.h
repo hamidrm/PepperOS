@@ -48,7 +48,7 @@ typedef enum {
     POS_TIMER3 = (uint32_t)TIM17,
 } PosTimerList;
 
-typedef void(*int_isr_t)(void);
+typedef void(*int_isr_t)(uint8_t int_type);
 void timer_init(PosTimerList timer,uint32_t prescale,int_isr_t isr);
 uint8_t timer_get_elapsed_status(PosTimerList timer);
 void timer_reset_elapsed_status(PosTimerList timer);
@@ -58,6 +58,8 @@ void timer_enable(PosTimerList timer);
 void timer_disable(PosTimerList timer);
 void timer_enable_evt(PosTimerList timer);
 void timer_disable_evt(PosTimerList timer);
+uint32_t timer_get_current_val(PosTimerList timer);
+void timer_set_current_val(PosTimerList timer,uint32_t value);
 void TIM3_IRQHandler(void);
 void TIM6_IRQHandler(void);
 void TIM14_IRQHandler(void);

@@ -32,9 +32,10 @@ SOFTWARE.
  *  @version 1.0
  *  
  *  @brief Initializing PepperOS (and other things that user wants) and creating needed tasks.
- *      In this example , PepperOS handles two task to print two differnt data.
+ *      In this example , PepperOS handles two task to blinks 3 LED.
  *
  */
+
 #include "pepper_os.h"
 
 #include "task1.h"
@@ -45,7 +46,7 @@ uint8_t s2[512];
 
 void main(void){
   pos_init();
-  pos_create_task(Task1_Main,Task1_Proc,s1,512,POS_TASK_HIGH_PRIORITY);
-  pos_create_task(Task2_Main,Task2_Proc,s2,512,POS_TASK_HIGH_PRIORITY);
+  pos_create_task(Task1_Main,Task1_Proc,s1,512,POS_TASK_LOW_PRIORITY);
+  pos_create_task(Task2_Main,Task2_Proc,s2,512,POS_TASK_LOW_PRIORITY);
   pos_scheduler_start(); 
 }

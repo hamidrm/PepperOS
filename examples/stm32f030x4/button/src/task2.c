@@ -56,7 +56,7 @@ void Task2_Proc(pos_process_message_type msg_type,pos_process_message_content ms
   case POS_TASK_STARTUP:
     {
       uint32_t tid;
-      pos_add_timer(200,&tid,task2_pid,TIMER_MODE_PERIODICALLY);
+      pos_add_timer(100,&tid,task2_pid,TIMER_MODE_PERIODICALLY);
       pos_start_timer(tid);
     }
     break;

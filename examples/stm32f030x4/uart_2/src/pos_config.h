@@ -27,21 +27,35 @@ SOFTWARE.
 
 
 /**
- *  @file    task2.h
+ *  @file    pos_config.h
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief Send a blink LED message to Task1 every 1 s.
+ *  @brief pepper os configuration file
  *
  */
 
-#ifndef _TASK2_H_
-#define _TASK2_H_
 
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
+#include "pos_types.h"
 
+/* System Configuration */
+#define SYS_FREQ                48 MHz
+#define EXT_CRYSTAL_STATUS      TRUE
+#define EXT_CRYSTAL_FREQ        8 MHz
 
-void Task2_Main(pos_pid_type pid);
-void Task2_Proc(pos_process_message_type,pos_process_message_content,pos_pid_type src);
+/* POS Configuration */
+#define CHECK_STACK_OVER_FLOW   0
+#define MEAN_QUANTUM_LENGTH          50 // ms
+#define MAX_PROCCESS_NUM           2
+#define MAX_IPC_MESSAGES_NUM    5
+#define MAX_MUTEX_NUM           0
+
+#define USE_CONSOLE             TRUE
+#define CONSOLE_BAUDRATE        19200
+//#define USE_EXT_INT             TRUE
+//#define POS_MAX_EXT_INT_PINS    1
 
 
 #endif

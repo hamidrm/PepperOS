@@ -64,6 +64,8 @@ PosStatusType pos_ipc_init(void){
 
 PosStatusType pos_send_message(pos_pid_type target,	pos_process_message_type message_type,pos_process_message_content message_content){
 	pos_process_message_t e;
+        //if(pos_get_current_task()->proc_fun == NULL)
+        //  return POS_OK;
 #if     MAX_IPC_MESSAGES_NUM > 0
         uint32_t messages_cnt=0;
         pos_process_message_queue_t *q = __mq[target-1];
@@ -93,7 +95,8 @@ PosStatusType pos_get_message(void){
         POS_ASSERT(pos_get_current_task()->proc_fun != NULL_PTR);
         POS_ASSERT(pos_semaphore_wait(&__mqs[pid-1]) == POS_OK);
 	POS_ASSERT_SEND_ERROR(pos_ipc_deq(pid,&pmsg) == POS_QUEUE_NOT_EMPTY,POS_OS_QUEUE_EMPTY);
-        pos_get_current_task()->proc_fun(pmsg.message_type,pmsg.message_content,pmsg.src);
+        if(pos_get_current_task()->proc_fun != NULL)
+          pos_get_current_task()->proc_fun(pmsg.message_type,pmsg.message_content,pmsg.src);
         return POS_OK;
 }
 

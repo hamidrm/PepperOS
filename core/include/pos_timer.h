@@ -45,5 +45,6 @@ uint8_t pos_resume_timer(timer_id_t tid);
 uint8_t pos_stop_timer(timer_id_t tid);
 void pos_init_timers(void);
 void pos_kill_all_timers(void);
-
+uint8_t pos_restart_timer(uint32_t id);
+void pos_timer_int_isr(uint8_t int_type);
 #endif

@@ -61,7 +61,6 @@ SOFTWARE.
 
 void pos_error(uint32_t error_no);
 uint32_t pos_get_last_error(void);
-void delay(volatile uint32_t time);
 PosStatusType pos_create_task(task_start_handler_t main_fn,task_msg_proc_t process_fn,uint8_t * stack_addr,size_t stack_size,PosTaskPriority priority);
 void pos_init(void);
 void pos_delay_ms(uint32_t time);
