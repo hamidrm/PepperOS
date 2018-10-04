@@ -38,10 +38,14 @@ SOFTWARE.
 
 
 #include "pos_devices.h"
+
+
 #if defined(CM0)
         public PendSV_Handler
         extern __current_task
         extern __next_task
+        
+        
         extern pos_kill_task
         extern pos_error
         extern os_mode;
@@ -102,24 +106,26 @@ PendSV_Handler:
         
         mrs	r0, psp
 #if CHECK_STACK_OVER_FLOW == 1
-        ldr     r1,=__current_task
-        ldr     r2,[r1]
+        ldr     r3,=__current_task
+        ldr     r2,[r3]
         adds    r2,r2,#8        ;Original SP offset
-        ldr     r4,[r2]
-        cmp     r0,r4
+        ldr     r1,[r2]
+        mov     r2,r0
+        subs    r2,r2,#32
+        cmp     r2,r1
         bge     valid_stack
         ;StackOverflow occured!
         ;But if one of the tasks stack that is in the first allocated block , Hardault will be occur and code never comes here.
-        subs    r2,r2,#8        ;Current task PID
-        ldrh    r0,[r2]
+        ldr     r3,[r3]     
+        ldrh    r0,[r3] ;Current task PID
         ldr     r3,=pos_kill_task
-        bx      r3
+        blx      r3
         movs    r0,#6   ;Stackoverflow Error
         movs    r1,#1
         lsls    r1,r1,#31
         orrs    r0,r0,r1
         ldr     r3,=pos_error
-        bx      r3
+        blx      r3
         /* EXC_RETURN - Thread mode with PSP */
 	ldr r0, =0xFFFFFFFD
 
@@ -152,7 +158,7 @@ valid_stack:
         adds    r2,r2,#4 ;SP offset
         ldr     r0,[r2]
         
-        
+
         ; Load all registers for next task
         ldmia	r0!,{r4-r7}
 	mov	r8, r4

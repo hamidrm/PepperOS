@@ -48,7 +48,7 @@ SOFTWARE.
 
 static PosStatusType pos_semaphore_enq(pos_semaphore_t *s,pos_pid_type pid);
 static PosStatusType pos_semaphore_deq(pos_semaphore_t *s,pos_pid_type * pid);
-
+extern uint8_t __is_sleep_mode;
 
 PosStatusType pos_semaphore_init(pos_semaphore_t *s,int16_t iv){
 	s->cnt = iv;
@@ -58,8 +58,7 @@ PosStatusType pos_semaphore_init(pos_semaphore_t *s,int16_t iv){
 }
 
 PosStatusType pos_semaphore_wait(pos_semaphore_t *s){
-        pos_pid_type pid = _pos_get_current_pid();
-        
+
         POS_ASSERT(s != NULL_PTR);
 	POS_BEGIN_KCRITICAL;
         s->cnt-=1;	
@@ -116,7 +115,9 @@ PosStatusType pos_semaphore_signal(pos_semaphore_t *s,pos_pid_type * pid){
         POS_BEGIN_KCRITICAL;
 	s->cnt+=1;
 	POS_ASSERT(pos_semaphore_deq(s,&_pid) == POS_OK);
-        if(_pid != POS_KERNEL_PID &&  pos_get_task_by_pid(_pid)->priority == POS_TASK_HIGH_PRIORITY)
+        
+        
+        if(_pid != POS_KERNEL_PID &&  pos_get_task_by_pid(_pid)->priority == POS_TASK_HIGH_PRIORITY && __is_sleep_mode == 0)
           pos_force_cs_by_pid(_pid);
         
         POS_END_KCRITICAL;

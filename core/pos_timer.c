@@ -118,6 +118,7 @@ uint8_t pos_start_timer(uint32_t id){
         ct->status = TIMER_STATUS_RUNNING;
         if(!TIMER_STATE){
           TIMER_STATE=1;
+          timer_set_current_val(POS_TIMER0,0);
           timer_enable(POS_TIMER0);
         }
         POS_END_KCRITICAL;

@@ -77,8 +77,9 @@ void Task1_Proc(pos_process_message_type msg_type,pos_process_message_content ms
   case POS_TASK_EXT_INT:
     {
       order ^= 1;
-      pos_add_timer(50,&btn_debounce_timer,task1_pid,TIMER_MODE_ONE_SHOT);
+      pos_add_timer(500,&btn_debounce_timer,task1_pid,TIMER_MODE_ONE_SHOT);
       pos_start_timer(btn_debounce_timer);
+      
     }
     break;
   case POS_TASK_TIMER:

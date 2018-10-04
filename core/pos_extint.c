@@ -65,36 +65,46 @@ PosStatusType pos_extint_add(PosPorts port,PosPinsNumber pin,PosExtIntMode mode,
 
 uint8_t extint_is_active(PosPorts port,PosPinsNumber pin){
   uint8_t i = 0;
+  POS_BEGIN_KCRITICAL;
   while(i<ext_int_cnt){
-    if(extint_list[i].port == port && extint_list[i].pin == pin)
+    if(extint_list[i].port == port && extint_list[i].pin == pin){
+      POS_END_KCRITICAL;
       return extint_list[i].is_active;
+    }
     i++;
   }
+  POS_END_KCRITICAL;
   return FALSE;
 }
 
 void extint_release(PosPorts port,PosPinsNumber pin){ 
   uint8_t i = 0;
+  POS_BEGIN_KCRITICAL;
   while(i<ext_int_cnt){
     if(extint_list[i].is_active==TRUE && extint_list[i].port == port && extint_list[i].pin == pin){
       extint_list[i].is_active = FALSE;
+      POS_END_KCRITICAL;
       return;
     }
     i++;
   }
+  POS_END_KCRITICAL;
+  POS_END_KCRITICAL;
 }
-
 
 void extint_occured(PosPorts port,PosPinsNumber pin){
   uint8_t i = 0;
+  POS_BEGIN_KCRITICAL;
   while(i<ext_int_cnt){
     if(extint_list[i].is_active==FALSE && extint_list[i].port == port && extint_list[i].pin == pin){
       extint_list[i].is_active = TRUE;
       pos_send_message(extint_list[i].pid,POS_TASK_EXT_INT,(uint32_t)&extint_list[i]);
+      POS_END_KCRITICAL;
       return;
     }
     i++;
   }
+  POS_END_KCRITICAL;
 }
 
 

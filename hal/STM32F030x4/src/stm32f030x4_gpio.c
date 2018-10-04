@@ -84,13 +84,13 @@ void enable_pin_int(PosPorts port,PosPinsNumber pin,PosExtIntMode mode,PosPullMo
     config_pin(port,pin,INTERRUPT_RISING_FALLING,pull);
   }
   if(pin == PIN1 || pin == PIN0){
-    HAL_NVIC_SetPriority(EXTI0_1_IRQn, 1, 0);
+    HAL_NVIC_SetPriority(EXTI0_1_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
   }else if(pin == PIN3 || pin == PIN2){
-    HAL_NVIC_SetPriority(EXTI2_3_IRQn, 1, 0);
+    HAL_NVIC_SetPriority(EXTI2_3_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(EXTI2_3_IRQn);
   }else{
-    HAL_NVIC_SetPriority(EXTI4_15_IRQn, 1, 0);
+    HAL_NVIC_SetPriority(EXTI4_15_IRQn,2, 0);
     HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
   }
   
@@ -153,7 +153,6 @@ void EXTI2_3_IRQHandler(void)
     extint_occured(ports_name[int_port_index[3]],PIN3);
   }
 }
-
 
 void EXTI4_15_IRQHandler(void)
 {

@@ -67,6 +67,7 @@ _SCV(num);\
   }
 #define pos_os_call(num,arg0,arg1,arg2,arg3) pos_os_call_##num(arg0,arg1,arg2,arg3)
 
+#define pos_set_os_mode(mode) os_mode = mode
 typedef enum {
   CM0_STACKING_OFFSET_R8,
   CM0_STACKING_OFFSET_R9,

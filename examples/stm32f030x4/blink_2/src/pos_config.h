@@ -47,8 +47,8 @@ SOFTWARE.
 
 /* POS Configuration */
 #define CHECK_STACK_OVER_FLOW   0
-#define MEAN_QUANTUM_LENGTH          50 // ms
-#define MAX_PROCCESS_NUM           3
+#define MEAN_QUANTUM_LENGTH     50 // ms
+#define MAX_PROCCESS_NUM        3
 #define MAX_IPC_MESSAGES_NUM    5
 #define MAX_MUTEX_NUM           0
 

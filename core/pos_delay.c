@@ -50,6 +50,8 @@ SOFTWARE.
 
 
 static _pos_delay_t * pos_delay_head;
+extern uint8_t __is_sleep_mode;
+
 
 PosStatusType pos_delay_init(void){
   pos_delay_head = 0;
@@ -117,13 +119,13 @@ void pos_delay_tick(void){
    if((pos_delay_head != NULL) && (pos_delay_head->elapsed_time <= 0)){
     /* Check task status */
     if(pos_get_task_by_pid(pos_delay_head->pid)->status == POS_TASK_STATUS_DELAY){
-      if(pos_get_task_by_pid(pos_delay_head->pid)->priority == POS_TASK_HIGH_PRIORITY)
+      if(pos_get_task_by_pid(pos_delay_head->pid)->priority == POS_TASK_HIGH_PRIORITY && __is_sleep_mode == 0)
         pos_force_cs_by_pid(pos_delay_head->pid);
       else
         pos_get_task_by_pid(pos_delay_head->pid)->status = (pos_delay_head->pid == _pos_get_current_pid()) ? POS_TASK_STATUS_ACTIVE : POS_TASK_STATUS_IDLE;
     }else if(pos_get_task_by_pid(pos_delay_head->pid)->status == POS_TASK_STATUS_SEM_WAITING_UNTIL){
       pos_get_task_by_pid(pos_delay_head->pid)->status = POS_TASK_STATUS_DELAY_TIMEOUT;
-      if(pos_get_task_by_pid(pos_delay_head->pid)->priority == POS_TASK_HIGH_PRIORITY)
+      if(pos_get_task_by_pid(pos_delay_head->pid)->priority == POS_TASK_HIGH_PRIORITY && __is_sleep_mode == 0)
         pos_force_cs_by_pid(pos_delay_head->pid);
     }else {
       /* WTF Here?! */

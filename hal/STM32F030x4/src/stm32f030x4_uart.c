@@ -155,7 +155,7 @@ void uart_init(pos_hw_uart_t * uart_params,PosUartList uart){
   
   Instance->CR1 |= USART_CR1_UE;
   
-  HAL_NVIC_SetPriority(USART1_IRQn, 0x00, 0);
+  HAL_NVIC_SetPriority(USART1_IRQn, 0x02, 0);
   HAL_NVIC_EnableIRQ(USART1_IRQn);
 }
 #endif

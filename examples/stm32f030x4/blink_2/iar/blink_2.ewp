@@ -606,6 +606,9 @@
                 <option>
                     <name>AUserIncludes</name>
                     <state>$PROJ_DIR$\..\..\..\..\core\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\lib\console\</state>
+                    <state>$PROJ_DIR$\..\..\..\..\lib\include</state>
+                    <state>$PROJ_DIR$\..\src</state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>
@@ -2059,9 +2062,6 @@
             <name>include</name>
             <file>
                 <name>$PROJ_DIR$\..\..\..\..\core\include\pepper_os.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\..\..\core\include\pos_config.h</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\..\..\core\include\pos_console.h</name>

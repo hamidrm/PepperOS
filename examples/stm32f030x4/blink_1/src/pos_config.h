@@ -46,7 +46,7 @@ SOFTWARE.
 #define EXT_CRYSTAL_FREQ        8 MHz
 
 /* POS Configuration */
-#define CHECK_STACK_OVER_FLOW   0
+#define CHECK_STACK_OVER_FLOW   FALSE
 #define MEAN_QUANTUM_LENGTH          50 // ms
 #define MAX_PROCCESS_NUM           2
 #define MAX_IPC_MESSAGES_NUM    5

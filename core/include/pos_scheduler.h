@@ -48,7 +48,7 @@ pos_task_type * pos_get_current_task(void);
 void pos_kill_task(pos_pid_type pid);
 pos_task_type * pos_get_task_by_pid(pos_pid_type pid);
 void pos_get_total_elapsed_time(uint64_t *time);
-void pos_get_task_elapsed_time(pos_pid_type pid,uint32_t *time);
+void pos_get_sleep_elapsed_time(uint64_t *time);
 void pos_force_cs_by_pid(pos_pid_type pid);
 void pos_force_cs(void);
 extern inline void pos_sleep_cpu(void);

@@ -38,7 +38,6 @@ SOFTWARE.
 #define _DEVICES_H_
 
 #include "pos_utility.h"
-
 /* 
 Supported Devices List
 */

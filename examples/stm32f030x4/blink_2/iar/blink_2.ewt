@@ -2399,9 +2399,6 @@
                 <name>$PROJ_DIR$\..\..\..\..\core\include\pepper_os.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\..\..\core\include\pos_config.h</name>
-            </file>
-            <file>
                 <name>$PROJ_DIR$\..\..\..\..\core\include\pos_console.h</name>
             </file>
             <file>

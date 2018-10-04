@@ -53,7 +53,7 @@ SOFTWARE.
 #define MAX_MUTEX_NUM           31
 
 #define USE_CONSOLE             TRUE
-#define CONSOLE_BAUDRATE        115200
+#define CONSOLE_BAUDRATE        19200
 //#define USE_EXT_INT             TRUE
 //#define POS_MAX_EXT_INT_PINS    1
 

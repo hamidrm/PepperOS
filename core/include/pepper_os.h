@@ -65,7 +65,9 @@ PosStatusType pos_create_task(task_start_handler_t main_fn,task_msg_proc_t proce
 void pos_init(void);
 void pos_delay_ms(uint32_t time);
 void pos_os_sys_call(PosSysCallType num,uint32_t * args);
-
+uint32_t pos_task_running_time(pos_pid_type pid);
+uint32_t pos_sleep_time(void);
+uint32_t pos_total_time(void);
 
 void pos_uart_sent(void);
 void pos_print(char * text);

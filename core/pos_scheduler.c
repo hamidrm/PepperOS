@@ -50,8 +50,8 @@ SOFTWARE.
 
 uint8_t __quantum_cur_len;
 uint8_t __mt;
+uint8_t __is_sleep_mode;
 uint16_t __tasks_cnt;
-
 
 pos_task_type * __current_task;
 pos_task_type * __next_task;
@@ -66,7 +66,7 @@ extern inline void pos_force_goto_task(pos_pid_type pid);
 
 void pos_scheduler_start(void){
   if(tasks_scheduler_head){
-    os_mode = POS_KERNEL_ACTIVE;
+    pos_set_os_mode(POS_KERNEL_ACTIVE);
     __current_task = &tasks_scheduler_head->task;
     __current_task->status = POS_TASK_STATUS_ACTIVE;
     current_task_element = tasks_scheduler_head;
@@ -85,7 +85,7 @@ void pos_scheduler_start(void){
       __quantum_cur_len = (uint8_t)(MEAN_QUANTUM_LENGTH * 0.75);
     pos_reset_task_timer();
     __mt = 1;
-    os_mode = POS_TASKS_ACTIVE;
+    pos_set_os_mode(POS_TASKS_ACTIVE);
     __current_task->start_fun(__current_task->pid);
     while(1); // TODO-Primary Task (PID=1) stoped!
   }
@@ -99,7 +99,7 @@ void pos_scheduler_init(void){
   current_task_element = 0;
   __mt = 0;
   __tasks_cnt = 0;
-
+  __is_sleep_mode = 0;
   elapsed_times.total_elapsed_time = 0;
   elapsed_times.sleep_elapsed_time = 0;
   elapsed_times.kernel_elapsed_time = 0;
@@ -161,10 +161,10 @@ PosStatusType pos_schedule_init_task(task_start_handler_t start_handler,task_msg
 void pos_task_finish(void){
   //Kill current task
   POS_BEGIN_KCRITICAL;
-  os_mode = POS_KERNEL_ACTIVE;
+  pos_set_os_mode(POS_KERNEL_ACTIVE);
   pos_kill_task(current_task_element->task.pid);
   pos_schedule_tasks();
-  os_mode = POS_TASKS_ACTIVE;
+  pos_set_os_mode(POS_TASKS_ACTIVE);
   POS_END_KCRITICAL;
 }
 
@@ -176,23 +176,29 @@ void pos_get_total_elapsed_time(uint64_t *time){
   *time = elapsed_times.total_elapsed_time;
 }
 
-void pos_get_task_elapsed_time(pos_pid_type pid,uint32_t *time){
-  *time = pos_get_task_by_pid(pid)->time_elapsed_active;
+void pos_get_sleep_elapsed_time(uint64_t *time){
+  *time = elapsed_times.sleep_elapsed_time;
 }
+
+
+
 
 void pos_kill_task(pos_pid_type pid){
   pos_scheduler_t * previuse_element = NULL;
   pos_scheduler_t * current_element = tasks_scheduler_head;
-  POS_BEGIN_KCRITICAL;
+
   while (current_element) {
     if(current_element->task.pid == pid){
       /* PID found , remove it */
       if(previuse_element)
         previuse_element->next_task = current_element->next_task;
-      else
-        tasks_scheduler_head = current_element->next_task;
-      pfree(current_element->task.sp);
-      pfree(current_element);
+      else{
+        if( current_element->next_task->task.pid != current_element->task.pid )
+          tasks_scheduler_head = current_element->next_task;
+      }
+      //TODO-Check task region (HEAP/STACK)
+      //pfree(current_element->task.sp);
+      //pfree(current_element);
       __tasks_cnt--;
       break;
     }else{
@@ -200,7 +206,6 @@ void pos_kill_task(pos_pid_type pid){
       current_element = current_element->next_task;
     }
   }
-  POS_END_KCRITICAL;
 }
 
 
@@ -226,7 +231,7 @@ pos_task_type * pos_get_current_task(void){
 
 inline void pos_force_goto_task(pos_pid_type pid){
     pos_scheduler_t * current_element = tasks_scheduler_head;
-    os_mode = POS_KERNEL_ACTIVE;
+    pos_set_os_mode(POS_KERNEL_ACTIVE);
     __current_task = &(current_task_element->task);
     while (current_element) {
       if(current_element->task.pid == pid){
@@ -252,17 +257,14 @@ inline void pos_force_goto_task(pos_pid_type pid){
     if(__next_task->status == POS_TASK_STATUS_IDLE)
       __next_task->status = POS_TASK_STATUS_ACTIVE;
     __pos_do_cs();
-    os_mode = POS_TASKS_ACTIVE;
 }
 
 inline PosSchedulerStatus pos_schedule_tasks(void){
   pos_scheduler_t * executed_task_element;
-  os_mode = POS_KERNEL_ACTIVE;
-  if(!__mt){
-    os_mode = POS_TASKS_ACTIVE;
+  if(!__mt)
     return POS_SCHEDULER_OS_NOT_STARTED;
-  }
   POS_BEGIN_KCRITICAL;
+  pos_set_os_mode(POS_KERNEL_ACTIVE);
   executed_task_element = current_task_element;
   current_task_element = current_task_element->next_task;
   
@@ -274,7 +276,6 @@ inline PosSchedulerStatus pos_schedule_tasks(void){
     if(executed_task_element->task.pid == current_task_element->task.pid){
       /* All of the tasks are blocked! Sleep CPU */
       current_task_element = executed_task_element;
-      os_mode = POS_TASKS_ACTIVE;
       POS_END_KCRITICAL;
       return POS_SCHEDULER_NO_TASK_READY;
     }else
@@ -284,6 +285,7 @@ inline PosSchedulerStatus pos_schedule_tasks(void){
   
   __current_task = &(executed_task_element->task);
   __next_task = &(current_task_element->task);
+  
   /* Set quantum length according task priority */
   if(__current_task->priority == POS_TASK_HIGH_PRIORITY)
     /* High priority : use 125% of  MEAN_QUANTUM_LENGTH */
@@ -301,8 +303,8 @@ inline PosSchedulerStatus pos_schedule_tasks(void){
   
   
   /* Context switch - From __current_task to __next_task */
+
   __pos_do_cs();
-  os_mode = POS_TASKS_ACTIVE;
   POS_END_KCRITICAL;
   return POS_SCHEDULER_OK;
 }
@@ -312,37 +314,38 @@ inline PosSchedulerStatus pos_schedule_tasks(void){
   Force context switch (according to scheduler order)
 */
 void pos_force_cs(void){
-  /* Clear Pending SysTick */
-  os_mode = POS_KERNEL_ACTIVE;
+  __is_sleep_mode = 1;
   __pos_clear_systick();
   pos_reset_task_timer();
-  
+  pos_set_os_mode(POS_SYSTEM_SLEEP);
   POS_END_KCRITICAL;
   pos_os_call(POS_SYS_CALL_SLEEP_CPU,0,0,0,0);
   pos_yield_delay();
+  __is_sleep_mode = 0;
   POS_BEGIN_KCRITICAL;
-  os_mode = POS_TASKS_ACTIVE;
 }
 
 
 /*
   Force context switch to the pid
 */
+
+
 void pos_force_cs_by_pid(pos_pid_type pid){
-  os_mode = POS_KERNEL_ACTIVE;
+  pos_set_os_mode(POS_KERNEL_ACTIVE);
   if(__mt){
       pos_reset_task_timer();
       pos_force_goto_task(pid);
   }
-  os_mode = POS_TASKS_ACTIVE;
 }
 
 
 inline void pos_sleep_cpu(void){
+
   while(pos_schedule_tasks() == POS_SCHEDULER_NO_TASK_READY){
-    os_mode = POS_SYSTEM_SLEEP;
+
     __pos_cpu_sleep_ins();
-    os_mode = POS_KERNEL_ACTIVE;
+    
     pos_reset_task_timer();
     if(current_task_element->task.status == POS_TASK_STATUS_ACTIVE)
       break;
@@ -351,5 +354,5 @@ inline void pos_sleep_cpu(void){
 
 
 inline void pos_set_current_mode(PosOsMode mode){
-  os_mode = mode;
+  pos_set_os_mode(mode);
 }

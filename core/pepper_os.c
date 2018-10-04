@@ -63,6 +63,23 @@ void pos_init(void)
 #endif
 }
 
+uint32_t pos_task_running_time(pos_pid_type pid){
+  return pos_get_task_by_pid(pid)->time_elapsed_active;
+}
+
+uint32_t pos_sleep_time(void){
+  uint64_t t;
+  pos_get_sleep_elapsed_time(&t);
+  return t;
+}
+
+uint32_t pos_total_time(void){
+  uint64_t t;
+  pos_get_total_elapsed_time(&t);
+  return t;
+}
+
+
 void pos_delay_ms(uint32_t time){
   POS_BEGIN_KCRITICAL;
   pos_delay_add(pos_get_current_task()->pid,time,POS_TASK_STATUS_DELAY);
@@ -89,9 +106,9 @@ PosStatusType pos_create_task(task_start_handler_t main_fn,task_msg_proc_t proce
 
 void pos_error(uint32_t error_no){
   last_error_no = error_no;
-#ifdef POS_DEBUG
+//#ifdef POS_DEBUG
   asm volatile ("bkpt #0");
-#endif
+//#endif
 }
 
 uint32_t pos_get_last_error(void){
@@ -100,12 +117,11 @@ uint32_t pos_get_last_error(void){
 
 
 void pos_os_sys_call(PosSysCallType num,uint32_t * args){
-  pos_set_current_mode(POS_KERNEL_ACTIVE);
+  ///pos_set_current_mode(POS_KERNEL_ACTIVE);
   switch(num){
   case POS_SYS_CALL_SLEEP_CPU:
     pos_sleep_cpu();
     break;
 
   }
-  pos_set_current_mode(POS_TASKS_ACTIVE);
 }

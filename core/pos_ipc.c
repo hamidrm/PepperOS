@@ -44,7 +44,6 @@ SOFTWARE.
 #include "pos_semaphore.h"
 #include _DEV_HAL_HEADER
 #include _ARCH_HEADER
-
 PosStatusType pos_ipc_enq(pos_pid_type pid,pos_process_message_t * m);
 PosQueueSTatus pos_ipc_deq(pos_pid_type pid,pos_process_message_t * res);
 static pos_process_message_queue_t * volatile __mq[MAX_PROCCESS_NUM]={NULL};
@@ -64,8 +63,10 @@ PosStatusType pos_ipc_init(void){
 
 PosStatusType pos_send_message(pos_pid_type target,	pos_process_message_type message_type,pos_process_message_content message_content){
 	pos_process_message_t e;
+        PosStatusType status;
         //if(pos_get_current_task()->proc_fun == NULL)
         //  return POS_OK;
+        POS_BEGIN_KCRITICAL;
 #if     MAX_IPC_MESSAGES_NUM > 0
         uint32_t messages_cnt=0;
         pos_process_message_queue_t *q = __mq[target-1];
@@ -82,15 +83,23 @@ PosStatusType pos_send_message(pos_pid_type target,	pos_process_message_type mes
         }
         if(MAX_IPC_MESSAGES_NUM <= messages_cnt){
           pos_error(POS_MEM_LOW_SPACE);
+          POS_END_KCRITICAL;
           return POS_ERROR;
         }
 #endif
 	pos_ipc_enq(target,&e);
-        return pos_semaphore_signal(&__mqs[target-1],NULL_PTR);
+        POS_END_KCRITICAL;
+        status = pos_semaphore_signal(&__mqs[target-1],NULL_PTR);
+        
+        return status;
 }
+
+extern uint32_t *   ts1;
+extern uint32_t *  ts2;
 
 PosStatusType pos_get_message(void){
         pos_process_message_t pmsg;
+ 
         pos_pid_type pid = _pos_get_current_pid();
         POS_ASSERT(pos_get_current_task()->proc_fun != NULL_PTR);
         POS_ASSERT(pos_semaphore_wait(&__mqs[pid-1]) == POS_OK);
