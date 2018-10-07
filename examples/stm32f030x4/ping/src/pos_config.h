@@ -27,20 +27,35 @@ SOFTWARE.
 
 
 /**
- *  @file    queue.h
+ *  @file    pos_config.h
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief linked list queue header
+ *  @brief pepper os configuration file
  *
  */
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
 
 
-PosStatusType pos_queue_enq(pos_queue_t * queue,void * data,size_t len);
-PosStatusType pos_queue_deq(pos_queue_t * queue,void ** data,size_t * len);
-PosStatusType pos_queue_count(pos_queue_t * queue,size_t * cnt);
-PosStatusType pos_create_queue(pos_queue_t ** queue);
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
+#include "pos_types.h"
+
+/* System Configuration */
+#define SYS_FREQ                48 MHz
+#define EXT_CRYSTAL_STATUS      TRUE
+#define EXT_CRYSTAL_FREQ        8 MHz
+
+/* POS Configuration */
+#define CHECK_STACK_OVER_FLOW   0
+#define MEAN_QUANTUM_LENGTH          50 // ms
+#define MAX_PROCCESS_NUM           2
+#define MAX_IPC_MESSAGES_NUM    5
+#define MAX_MUTEX_NUM           0
+
+#define USE_CONSOLE             TRUE
+#define CONSOLE_BAUDRATE        19200
+//#define USE_EXT_INT             TRUE
+//#define POS_MAX_EXT_INT_PINS    1
+
 
 #endif

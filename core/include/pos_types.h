@@ -89,6 +89,7 @@ typedef struct _pos_semaphore_queue_t pos_semaphore_queue_t;
 typedef struct pos_delay_t _pos_delay_t;
 typedef struct _pos_process_message_queue_t pos_process_message_queue_t;
 typedef struct _pos_queue_ll_t pos_queue_ll_t;
+typedef struct _pos_stack_ll_t pos_stack_ll_t;
 typedef enum
 {
   POS_KERNEL_ACTIVE,
@@ -260,6 +261,18 @@ typedef struct {
   pos_queue_ll_t * head;
   pos_semaphore_t * sem;
 } pos_queue_t;
+
+struct _pos_stack_ll_t{
+	void * elem_data;
+        size_t elem_len;
+	pos_stack_ll_t * next;
+} ;
+
+typedef struct {
+  pos_stack_ll_t * head;
+  pos_semaphore_t * sem;
+} pos_stack_t;
+
 
 typedef struct{
   pos_pid_type  pid;

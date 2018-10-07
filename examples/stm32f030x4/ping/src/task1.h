@@ -27,20 +27,36 @@ SOFTWARE.
 
 
 /**
- *  @file    queue.h
+ *  @file    task1.h
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief linked list queue header
+ *  @brief LED Blinking project (Example projects)
+ *      LED_RED -> PA5
+ *      LED_GREEN -> PA6
+ *      LED_BLUE -> PA7
  *
  */
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
+
+#ifndef _TASK1_H_
+#define _TASK1_H_
+
+#define LED_RED_PORT         PORTA
+#define LED_GREEN_PORT       PORTA
+#define LED_BLUE_PORT        PORTA
+#define BTN_PORT             PORTA
+
+#define LED_RED_PIN         PIN7
+#define LED_GREEN_PIN       PIN6
+#define LED_BLUE_PIN        PIN5
+#define BTN_PIN             PIN9
+
+#define RED_TO_BLUE     0
+#define BLUE_TO_RED     1
 
 
-PosStatusType pos_queue_enq(pos_queue_t * queue,void * data,size_t len);
-PosStatusType pos_queue_deq(pos_queue_t * queue,void ** data,size_t * len);
-PosStatusType pos_queue_count(pos_queue_t * queue,size_t * cnt);
-PosStatusType pos_create_queue(pos_queue_t ** queue);
+void Task1_Main(pos_pid_type pid);
+void Task1_Proc(pos_process_message_type,pos_process_message_content,pos_pid_type src);
+
 
 #endif

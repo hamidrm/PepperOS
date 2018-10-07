@@ -27,20 +27,48 @@ SOFTWARE.
 
 
 /**
- *  @file    queue.h
+ *  @file    task2.c
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief linked list queue header
+ *  @brief Send a string to UART project (Example projects)
  *
  */
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
+
+#include "pepper_os.h"
+#include "task2.h"
+#include "shared.h"
+
+extern pos_pid_type task1_pid;
+pos_pid_type task2_pid;
+static uint32_t tid;
 
 
-PosStatusType pos_queue_enq(pos_queue_t * queue,void * data,size_t len);
-PosStatusType pos_queue_deq(pos_queue_t * queue,void ** data,size_t * len);
-PosStatusType pos_queue_count(pos_queue_t * queue,size_t * cnt);
-PosStatusType pos_create_queue(pos_queue_t ** queue);
+static void InitBoard(void);
 
-#endif
+void Task2_Main(pos_pid_type pid){
+  task2_pid = pid;
+  while(1){
+    pos_get_message();
+  }
+}
+
+static void InitBoard(void){
+  config_pin(LED_PORT,LED_PIN,OUTPUT_PUSH_PULL,PULL_UP);
+}
+
+void Task2_Proc(pos_process_message_type msg_type,pos_process_message_content msg_cont,pos_pid_type src){
+  switch(msg_type){
+  case POS_TASK_STARTUP:
+    pos_add_timer(100,&tid,task2_pid,TIMER_MODE_PERIODICALLY);
+    pos_start_timer(tid);
+    InitBoard();
+    break;
+  case POS_TASK_TIMER:
+    toggle_pin(LED_PORT,LED_PIN);
+    break; 
+  case MSG_PING:
+    pos_send_message(task1_pid,MSG_PONG,0);
+    break;
+  }
+}

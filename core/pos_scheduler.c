@@ -343,9 +343,9 @@ void pos_force_cs_by_pid(pos_pid_type pid){
 inline void pos_sleep_cpu(void){
 
   while(pos_schedule_tasks() == POS_SCHEDULER_NO_TASK_READY){
-
+    pos_set_os_mode(POS_SYSTEM_SLEEP);
     __pos_cpu_sleep_ins();
-    
+    pos_set_os_mode(POS_KERNEL_ACTIVE);
     pos_reset_task_timer();
     if(current_task_element->task.status == POS_TASK_STATUS_ACTIVE)
       break;

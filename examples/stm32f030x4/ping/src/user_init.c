@@ -27,20 +27,26 @@ SOFTWARE.
 
 
 /**
- *  @file    queue.h
+ *  @file    user_init.c
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief linked list queue header
+ *  @brief Initializing PepperOS (and other things that user wants) and creating needed tasks.
+ *      In this example , PepperOS handles two task to blinks 3 LED.
  *
  */
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
 
+#include "pepper_os.h"
 
-PosStatusType pos_queue_enq(pos_queue_t * queue,void * data,size_t len);
-PosStatusType pos_queue_deq(pos_queue_t * queue,void ** data,size_t * len);
-PosStatusType pos_queue_count(pos_queue_t * queue,size_t * cnt);
-PosStatusType pos_create_queue(pos_queue_t ** queue);
+#include "task1.h"
+#include "task2.h"
 
-#endif
+uint8_t s1[512];
+uint8_t s2[512];
+
+void main(void){
+  pos_init();
+  pos_create_task(Task1_Main,Task1_Proc,s1,512,POS_TASK_LOW_PRIORITY);
+  pos_create_task(Task2_Main,Task2_Proc,s2,512,POS_TASK_LOW_PRIORITY);
+  pos_scheduler_start(); 
+}

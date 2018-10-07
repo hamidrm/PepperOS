@@ -27,20 +27,19 @@ SOFTWARE.
 
 
 /**
- *  @file    queue.h
+ *  @file    shared.c
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief linked list queue header
+ *  @brief All definetions and variables that are shared.
  *
  */
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
 
+#ifndef _SHARED_H_
+#define _SHARED_H_
 
-PosStatusType pos_queue_enq(pos_queue_t * queue,void * data,size_t len);
-PosStatusType pos_queue_deq(pos_queue_t * queue,void ** data,size_t * len);
-PosStatusType pos_queue_count(pos_queue_t * queue,size_t * cnt);
-PosStatusType pos_create_queue(pos_queue_t ** queue);
+#define MSG_PING        POS_USER_MESSAGES_OFFSET
+#define MSG_PONG        POS_USER_MESSAGES_OFFSET+0x00000001
+
 
 #endif

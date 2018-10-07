@@ -27,20 +27,20 @@ SOFTWARE.
 
 
 /**
- *  @file    queue.h
+ *  @file    stack.h
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief linked list queue header
+ *  @brief linked list stack header
  *
  */
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
+#ifndef _stack_H_
+#define _stack_H_
 
 
-PosStatusType pos_queue_enq(pos_queue_t * queue,void * data,size_t len);
-PosStatusType pos_queue_deq(pos_queue_t * queue,void ** data,size_t * len);
-PosStatusType pos_queue_count(pos_queue_t * queue,size_t * cnt);
-PosStatusType pos_create_queue(pos_queue_t ** queue);
+PosStatusType pos_stack_push(pos_stack_t * stack,void * data,size_t len);
+PosStatusType pos_stack_pop(pos_stack_t * stack,void ** data,size_t * len);
+PosStatusType pos_stack_count(pos_stack_t * stack,size_t * cnt);
+PosStatusType pos_create_stack(pos_stack_t ** stack);
 
 #endif

@@ -27,20 +27,23 @@ SOFTWARE.
 
 
 /**
- *  @file    queue.h
+ *  @file    task2.h
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief linked list queue header
+ *  @brief Send a blink LED message to Task1 every 1 s.
  *
  */
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
+
+#ifndef _TASK2_H_
+#define _TASK2_H_
 
 
-PosStatusType pos_queue_enq(pos_queue_t * queue,void * data,size_t len);
-PosStatusType pos_queue_deq(pos_queue_t * queue,void ** data,size_t * len);
-PosStatusType pos_queue_count(pos_queue_t * queue,size_t * cnt);
-PosStatusType pos_create_queue(pos_queue_t ** queue);
+#define LED_PORT        PORTA
+#define LED_PIN        PIN4
+
+void Task2_Main(pos_pid_type pid);
+void Task2_Proc(pos_process_message_type,pos_process_message_content,pos_pid_type src);
+
 
 #endif
