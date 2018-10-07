@@ -22,5 +22,5 @@ There are tri-level priority in this RTOS :
 
 ------------
 
-
-[![PepperOS Examples](http://img.youtube.com/vi/son4uOCHAqU/0.jpg)](http://www.youtube.com/watch?v=son4uOCHAqU "PepperOS Examples")
+# PepperOS Video
+[![PepperOS Examples](http://img.youtube.com/vi/son4uOCHAqU/1.jpg)](http://www.youtube.com/watch?v=son4uOCHAqU "PepperOS Examples")
