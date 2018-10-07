@@ -31,7 +31,7 @@ SOFTWARE.
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief Send a string to UART project (Example projects)
+ *  @brief Ping (Example projects)
  *      UART_TX -> PA9
  *      UART_RX -> PA10
  *

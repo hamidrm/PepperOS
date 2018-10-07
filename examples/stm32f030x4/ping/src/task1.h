@@ -31,10 +31,7 @@ SOFTWARE.
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief LED Blinking project (Example projects)
- *      LED_RED -> PA5
- *      LED_GREEN -> PA6
- *      LED_BLUE -> PA7
+ *  @brief ping (Example projects)
  *
  */
 
