@@ -69,7 +69,7 @@ PosStatusType pos_semaphore_wait(pos_semaphore_t *s){
 	POS_ASSERT(pos_semaphore_enq(s,_pos_get_current_pid()) == POS_OK);
         pos_get_current_task()->status = POS_TASK_STATUS_SEM_WAITING;
 	
-        pos_force_cs();
+        pos_yield();
         POS_END_KCRITICAL;
         pos_yield_delay();
         return POS_OK;
@@ -92,7 +92,7 @@ PosStatusType pos_semaphore_wait_until(pos_semaphore_t *s,uint32_t time_ms){
         while(pos_semaphore_get_value(s)!=pid); //Blocking in single threading , Goto next thread otherwise.
         */
 
-        pos_force_cs();
+        pos_yield();
         POS_END_KCRITICAL;
         pos_yield_delay();
         
@@ -118,7 +118,7 @@ PosStatusType pos_semaphore_signal(pos_semaphore_t *s,pos_pid_type * pid){
         
         
         if(_pid != POS_KERNEL_PID &&  pos_get_task_by_pid(_pid)->priority == POS_TASK_HIGH_PRIORITY && __is_sleep_mode == 0)
-          pos_force_cs_by_pid(_pid);
+          pos_yield_by_pid(_pid);
         
         POS_END_KCRITICAL;
         pos_yield_delay();

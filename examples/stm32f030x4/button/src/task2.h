@@ -31,7 +31,7 @@ SOFTWARE.
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
  *  
- *  @brief Send a blink LED message to Task1 every 1 s.
+ *  @brief Sends a blink LED message to Task1 every 100 ms.
  *
  */
 

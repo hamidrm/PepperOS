@@ -313,7 +313,7 @@ inline PosSchedulerStatus pos_schedule_tasks(void){
 /*
   Force context switch (according to scheduler order)
 */
-void pos_force_cs(void){
+void pos_yield(void){
   __is_sleep_mode = 1;
   __pos_clear_systick();
   pos_reset_task_timer();
@@ -331,7 +331,7 @@ void pos_force_cs(void){
 */
 
 
-void pos_force_cs_by_pid(pos_pid_type pid){
+void pos_yield_by_pid(pos_pid_type pid){
   pos_set_os_mode(POS_KERNEL_ACTIVE);
   if(__mt){
       pos_reset_task_timer();

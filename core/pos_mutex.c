@@ -112,7 +112,7 @@ void pos_mutex_acquire(pos_mutex_id_t * mutex){
     __mutex_locks_pid[*mutex][__mutex_locked_pid_cnt[*mutex]] = pos_get_current_task()->pid;
     pos_get_current_task()->status = POS_TASK_STATUS_SEM_WAITING;
     __mutex_locked_pid_cnt[*mutex]++;
-    pos_force_cs();
+    pos_yield();
     POS_END_KCRITICAL;
     pos_yield_delay();
   }else{

@@ -32,7 +32,7 @@ SOFTWARE.
  *  @version 1.0
  *  
  *  @brief Initializing PepperOS (and other things that user wants) and creating needed tasks.
- *      In this example , PepperOS handles two task to blinks 3 LED.
+ *      In this example , PepperOS handles two task to blinks 3 LED and controling button.
  *
  */
 

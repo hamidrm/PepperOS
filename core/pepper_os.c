@@ -83,7 +83,7 @@ uint32_t pos_total_time(void){
 void pos_delay_ms(uint32_t time){
   POS_BEGIN_KCRITICAL;
   pos_delay_add(pos_get_current_task()->pid,time,POS_TASK_STATUS_DELAY);
-  pos_force_cs();
+  pos_yield();
   POS_END_KCRITICAL;
   pos_yield_delay();
 }
@@ -117,7 +117,6 @@ uint32_t pos_get_last_error(void){
 
 
 void pos_os_sys_call(PosSysCallType num,uint32_t * args){
-  ///pos_set_current_mode(POS_KERNEL_ACTIVE);
   switch(num){
   case POS_SYS_CALL_SLEEP_CPU:
     pos_sleep_cpu();
