@@ -15,7 +15,7 @@ Highlights Include:
 
 
 There are tri-level priority in this RTOS :
-1. High Priority : It has 125% of quantum time and will yields immediately on signaling semaphores.
+1. High Priority : With 125% of quantum time and will yields immediately on signaling semaphores.
 2. Normal Priority : 100% of quantum time.
 3. Low Priority : 75% of quantum time.
 
