@@ -19,8 +19,5 @@ There are tri-level priority in this RTOS :
 2. Normal Priority : 100% of quantum time.
 3. Low Priority : 75% of quantum time.
 
-
-------------
-
 # PepperOS Video
 [![PepperOS Examples](http://img.youtube.com/vi/son4uOCHAqU/1.jpg)](http://www.youtube.com/watch?v=son4uOCHAqU "PepperOS Examples")
