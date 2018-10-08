@@ -3,7 +3,7 @@ MIT License
 
 Copyright (c) 2018 Hamid Reza Mehrabian
 
-This file is part of PepperOS. 
+This file is part of PepperOS.
 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,7 +30,7 @@ SOFTWARE.
  *  @file    task1.c
  *  @author  Hamid Reza Mehrabian
  *  @version 1.0
- *  
+ *
  *  @brief Ping (Example projects)
  *      UART_TX -> PA9
  *      UART_RX -> PA10
@@ -85,8 +85,8 @@ void Task1_Proc(pos_process_message_type msg_type,pos_process_message_content ms
   case POS_TASK_TIMER:
     start_time = pos_total_time();
     pos_send_message(task2_pid,MSG_PING,0);
-    
-    break; 
+
+    break;
   case MSG_PONG:
     {
       char buff[12];
@@ -98,6 +98,6 @@ void Task1_Proc(pos_process_message_type msg_type,pos_process_message_content ms
         print(" (ms)\n",6);
       }
     }
-    break; 
+    break;
   }
 }
