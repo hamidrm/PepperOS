@@ -1,11 +1,11 @@
 # PepperOS
 ![PepperOS Logo](https://github.com/hamidrm/PepperOS/blob/master/pepper_os.jpg?raw=true)  
-PepperOS is a simple and lightweight real time kernel.  It's under development yet.
+PepperOS is a simple, lightweight and open-source real time kernel.  It's under development yet.
 Highlights Include:
 - Preemptive (RR scheduler) with optional time slicing.
-- RTOS objects (tasks, IPC, semaphores, software timers, mutexes , console and external interrupts).
+- RTOS objects (tasks, semaphores, software timers, mutexes).
 - Small footprint.
-- It runs on STM32F030F4 (Cortex-M0) currently, but it's portable to other MCU's.
+- Currently running on STM32F030F4 (Cortex-M0), but it is portable to other MCUs.
 ![STM32F030F4 Board](https://github.com/hamidrm/PepperOS/blob/master/stm32f030f4.jpg?raw=true)  
 - Designed to be small and simple. Typically, the kernel binary image will be in the region of around 10K bytes.
 - Efficient software timers.
